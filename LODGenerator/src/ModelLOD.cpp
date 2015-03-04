@@ -11,8 +11,6 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
-namespace ngl
-{
 
 // make a namespace for our parser to save writing boost::spirit:: all the time
 namespace spt=boost::spirit;
@@ -25,7 +23,7 @@ typedef spt::rule<spt::phrase_scanner_t> srule;
 // parse a vertex
 void ModelLOD::parseVertex( const char *_begin )
 {
-  std::vector<Real> values;
+  std::vector<ngl::Real> values;
   // here is the parse rule to load the data into a vector (above)
   srule vertex = "v" >> spt::real_p[spt::append(values)] >>
                         spt::real_p[spt::append(values)] >>
@@ -35,7 +33,7 @@ void ModelLOD::parseVertex( const char *_begin )
   // should check this at some stage
   NGL_UNUSED(result);
   // and add it to our vert list in abstact mesh parent
-  m_verts.push_back(Vec3(values[0],values[1],values[2]));
+  m_verts.push_back(ngl::Vec3(values[0],values[1],values[2]));
 }
 
 
@@ -43,7 +41,7 @@ void ModelLOD::parseVertex( const char *_begin )
 // parse a texture coordinate
 void ModelLOD::parseTextureCoordinate(const char * _begin )
 {
-  std::vector<Real> values;
+  std::vector<ngl::Real> values;
   // generate our parse rule for a tex cord,
   // this can be either a 2 or 3 d text so the *rule looks for an additional one
   srule texcord = "vt" >> spt::real_p[spt::append(values)] >>
@@ -55,15 +53,15 @@ void ModelLOD::parseTextureCoordinate(const char * _begin )
 
   // build tex cord
   // if we have a value use it other wise set to 0
-  Real vt3 = values.size() == 3 ? values[2] : 0.0f;
-  m_tex.push_back(Vec3(values[0],values[1],vt3));
+  ngl::Real vt3 = values.size() == 3 ? values[2] : 0.0f;
+  m_tex.push_back(ngl::Vec3(values[0],values[1],vt3));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 // parse a normal
 void ModelLOD::parseNormal( const char *_begin )
 {
-  std::vector<Real> values;
+  std::vector<ngl::Real> values;
   // here is our rule for normals
   srule norm = "vn" >> spt::real_p[spt::append(values)] >>
                        spt::real_p[spt::append(values)] >>
@@ -72,7 +70,7 @@ void ModelLOD::parseNormal( const char *_begin )
   spt::parse_info<> result = spt::parse(_begin, norm, spt::space_p);
   // should check the return values at some stage
   NGL_UNUSED(result);
-  m_norm.push_back(Vec3(values[0],values[1],values[2]));
+  m_norm.push_back(ngl::Vec3(values[0],values[1],values[2]));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -104,7 +102,7 @@ void ModelLOD::parseFace(const char * _begin   )
 
   int numVerts=vec.size();
   // so now build a face structure.
-  Face f;
+  ngl::Face f;
   // verts are -1 the size
   f.m_numVerts=numVerts-1;
   f.m_textureCoord=false;
@@ -268,25 +266,25 @@ void ModelLOD::save(const std::string& _fname)const
   fileOut<<"# This file was created by ngl Obj exporter "<<_fname.c_str()<<std::endl;
   // was c++ 11  for(Vec3 v : m_norm) for all of these
   // write out the verts
-  BOOST_FOREACH(Vec3 v , m_verts)
+  BOOST_FOREACH(ngl::Vec3 v , m_verts)
   {
     fileOut<<"v "<<v.m_x<<" "<<v.m_y<<" "<<v.m_z<<std::endl;
   }
 
   // write out the tex cords
-  BOOST_FOREACH(Vec3 v , m_tex)
+  BOOST_FOREACH(ngl::Vec3 v , m_tex)
   {
     fileOut<<"vt "<<v.m_x<<" "<<v.m_y<<std::endl;
   }
   // write out the normals
 
-  BOOST_FOREACH(Vec3 v , m_norm)
+  BOOST_FOREACH(ngl::Vec3 v , m_norm)
   {
     fileOut<<"vn "<<v.m_x<<" "<<v.m_y<<" "<<v.m_z<<std::endl;
   }
 
   // finally the faces
-  BOOST_FOREACH(Face f , m_face)
+  BOOST_FOREACH(ngl::Face f , m_face)
   {
   fileOut<<"f ";
   // we now have V/T/N for each to write out
@@ -305,8 +303,6 @@ void ModelLOD::save(const std::string& _fname)const
   }
 }
 
-} //end ngl namespace
-//----------------------------------------------------------------------------------------------------------------------
 
 
 

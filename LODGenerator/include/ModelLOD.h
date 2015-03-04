@@ -19,8 +19,7 @@
 #include <ngl/RibExport.h>
 #include <cmath>
 
-namespace ngl
-{
+
 //----------------------------------------------------------------------------------------------------------------------
 /// @class ModelLOD "include/ModelLOD.h"
 /// @brief used to store vertex information from an imported model and used as 
@@ -31,7 +30,7 @@ namespace ngl
 /// @date 02/03/15 imported code from Obj.h
 //----------------------------------------------------------------------------------------------------------------------
 
-class NGL_DLLEXPORT ModelLOD : public AbstractMesh
+class ModelLOD : public ngl::AbstractMesh
 {
 
 public :
@@ -87,7 +86,7 @@ protected :
 
 };
 
-}
+
 
 
 #endif

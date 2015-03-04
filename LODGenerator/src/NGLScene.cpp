@@ -128,7 +128,7 @@ void NGLScene::initialize()
 //  m_mesh->createVAO();
 
   // first we create a mesh from an obj passing in the obj file
-  m_modelLOD = new ngl::ModelLOD("models/Owen.obj");
+  m_modelLOD = new ModelLOD("models/Owen.obj");
   // scale mesh since it's huge
   m_modelLOD->scale(0.01f,0.01f,0.01f);
   // now we need to create this as a VAO so we can draw it

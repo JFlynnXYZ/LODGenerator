@@ -25,11 +25,6 @@ INCLUDEPATH+=./include
 DESTDIR=./
 # add the glsl shader files
 OTHER_FILES+=shaders/*.glsl
-# add the obj mesh files
-OTHER_FILES+=models/*.obj
-# add the texture files
-OTHER_FILES+=textures/*.tga \
-             textures/*.tiff
                                                         README.md
 # were are going to default to a console app
 CONFIG += console
