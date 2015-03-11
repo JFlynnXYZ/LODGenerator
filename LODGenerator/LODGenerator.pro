@@ -23,26 +23,48 @@ HEADERS+=$$PWD/include/*.h
 INCLUDEPATH+=./include
 # where our exe is going to live (root of project)
 DESTDIR=./
-# add the glsl shader files
-OTHER_FILES+=shaders/*.glsl
-                                                        README.md
+# add the other files
+OTHER_FILES+=   shaders/*.glsl \
+                models/*.obj \
+                textures/*.tga
 # were are going to default to a console app
 CONFIG += console
+
 # note each command you add needs a ; as it will be run as a single line
 # first check if we are shadow building or not easiest way is to check out against current
+
 !equals(PWD, $${OUT_PWD}){
-        copydata.commands = echo "creating destination dirs" ;
-        # now make a dir
-        copydata.commands += mkdir -p $$OUT_PWD/shaders ;
-        copydata.commands += echo "copying files" ;
-        # then copy the files
-        copydata.commands += $(COPY_DIR) $$PWD/shaders/* $$OUT_PWD/shaders/ ;
-        # now make sure the first target is built before copy
-        first.depends = $(first) copydata
-        export(first.depends)
-        export(copydata.commands)
-        # now add it as an extra target
-        QMAKE_EXTRA_TARGETS += first copydata
+        !win32 {
+            copydata.commands = echo "creating destination dirs" ;
+            # now make a dir
+            copydata.commands += mkdir -p $$OUT_PWD/shaders ;
+            copydata.commands += mkdir -p $$OUT_PWD/models ;
+            copydata.commands += mkdir -p $$OUT_PWD/textures ;
+            copydata.commands += echo "copying files" ;
+            # then copy the files
+            copydata.commands += $(COPY_DIR) $$PWD/shaders/* $$OUT_PWD/shaders/ ;
+            copydata.commands += $(COPY_DIR) $$PWD/models/* $$OUT_PWD/models/ ;
+            copydata.commands += $(COPY_DIR) $$PWD/textures/* $$OUT_PWD/textures/ ;
+            # now make sure the first target is built before copy
+            first.depends = $(first) copydata
+            export(first.depends)
+            export(copydata.commands)
+            # now add it as an extra target
+            QMAKE_EXTRA_TARGETS += first copydata
+        }
+        else {
+            QMAKE_POST_LINK += echo "creating windows destination dirs" &
+            # now make a dir
+            QMAKE_POST_LINK += mkdir "\"$$OUT_PWD/shaders\"" &
+            QMAKE_POST_LINK += mkdir "\"$$OUT_PWD/models\"" &
+            QMAKE_POST_LINK += mkdir "\"$$OUT_PWD/textures\"" &
+            QMAKE_POST_LINK += echo "copying files" &
+            # then copy the files
+            QMAKE_POST_LINK += $(COPY_DIR) "\"$$PWD/shaders\"" "\"$$OUT_PWD/shaders\"" &
+            QMAKE_POST_LINK += $(COPY_DIR) "\"$$PWD/models\"" "\"$$OUT_PWD/models\"" &
+            QMAKE_POST_LINK += $(COPY_DIR) "\"$$PWD/textures\"" "\"$$OUT_PWD/textures\""
+            export(QMAKE_POST_LINK)
+        }
 }
 # use this to suppress some warning from boost
 unix*:QMAKE_CXXFLAGS_WARN_ON += "-Wno-unused-parameter"

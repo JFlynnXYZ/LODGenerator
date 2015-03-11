@@ -43,14 +43,20 @@ OBJECTS_DIR   = obj
 
 ####### Files
 
-SOURCES       = src\main.cpp \
+SOURCES       = src\LOD.cpp \
+		src\main.cpp \
 		src\ModelLOD.cpp \
 		src\NGLScene.cpp \
-		src\OpenGLWindow.cpp moc\moc_OpenGLWindow.cpp
-OBJECTS       = obj\main.obj \
+		src\OpenGLWindow.cpp \
+		src\Triangle.cpp \
+		src\Vertex.cpp moc\moc_OpenGLWindow.cpp
+OBJECTS       = obj\LOD.obj \
+		obj\main.obj \
 		obj\ModelLOD.obj \
 		obj\NGLScene.obj \
 		obj\OpenGLWindow.obj \
+		obj\Triangle.obj \
+		obj\Vertex.obj \
 		obj\moc_OpenGLWindow.obj
 
 DIST          = 
@@ -143,7 +149,7 @@ dist:
 	$(ZIP) LODGenerator.zip $(SOURCES) $(DIST) LODGenerator.pro C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\spec_pre.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\common\shell-win32.conf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\qconfig.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_clucene_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_core.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_declarative.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_declarative_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_enginio.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_enginio_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_help.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_network.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_platformsupport_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_script.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_script_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_webkit.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_webkit_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_webkitwidgets.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_webkitwidgets_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\qt_functions.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\qt_config.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\win32\qt_config.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\win32-msvc2013\qmake.conf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\spec_post.prf .qmake.cache C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\exclusive_builds.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\default_pre.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\win32\default_pre.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\resolve_config.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\default_post.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\build_pass.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\win32\console.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\win32\rtti.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\precompile_header.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\warn_on.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\qt.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\resources.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\moc.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\win32\opengl.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\uic.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\testcase_targets.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\exceptions.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\yacc.prf C:\Qt\5.3\msvc2013_64_opengl\mkspecs\features\lex.prf LODGenerator.pro C:/Qt/5.3/msvc2013_64_opengl/lib/Qt5OpenGL.prl C:/Qt/5.3/msvc2013_64_opengl/lib/Qt5Widgets.prl C:/Qt/5.3/msvc2013_64_opengl/lib/Qt5Gui.prl C:/Qt/5.3/msvc2013_64_opengl/lib/Qt5Core.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) obj\main.obj obj\ModelLOD.obj obj\NGLScene.obj obj\OpenGLWindow.obj obj\moc_OpenGLWindow.obj
+	-$(DEL_FILE) obj\LOD.obj obj\main.obj obj\ModelLOD.obj obj\NGLScene.obj obj\OpenGLWindow.obj obj\Triangle.obj obj\Vertex.obj obj\moc_OpenGLWindow.obj
 	-$(DEL_FILE) LODGenerator.exp LODGenerator.exe.embed.manifest
 
 distclean: clean 
@@ -250,7 +256,7 @@ moc\moc_OpenGLWindow.cpp: C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\QWindow \
 		C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\qpainterpath.h \
 		C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\qcursor.h \
 		include\OpenGLWindow.h
-	C:\Qt\5.3\msvc2013_64_opengl\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -D_WIN64 -IC:/Qt/5.3/msvc2013_64_opengl/mkspecs/win32-msvc2013 -IH:/Users/Jon/Documents/GitHub/JFDesigner-CA1/WIP -IH:/Users/Jon/Documents/GitHub/JFDesigner-CA1/WIP/include -IH:/Users/Jon/Documents/GitHub/JFDesigner-CA1/WIP/-I -IC:/boost -IC:/NGL/include -IC:/Qt/5.3/msvc2013_64_opengl/include -IC:/Qt/5.3/msvc2013_64_opengl/include/QtOpenGL -IC:/Qt/5.3/msvc2013_64_opengl/include/QtWidgets -IC:/Qt/5.3/msvc2013_64_opengl/include/QtGui -IC:/Qt/5.3/msvc2013_64_opengl/include/QtCore include\OpenGLWindow.h -o moc\moc_OpenGLWindow.cpp
+	C:\Qt\5.3\msvc2013_64_opengl\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -D_WIN64 -IC:/Qt/5.3/msvc2013_64_opengl/mkspecs/win32-msvc2013 -IH:/Users/Jon/Documents/GitHub/JFDesigner-CA1/LODGenerator -IH:/Users/Jon/Documents/GitHub/JFDesigner-CA1/LODGenerator/include -IH:/Users/Jon/Documents/GitHub/JFDesigner-CA1/LODGenerator/-I -IC:/boost -IC:/NGL/include -IC:/Qt/5.3/msvc2013_64_opengl/include -IC:/Qt/5.3/msvc2013_64_opengl/include/QtOpenGL -IC:/Qt/5.3/msvc2013_64_opengl/include/QtWidgets -IC:/Qt/5.3/msvc2013_64_opengl/include/QtGui -IC:/Qt/5.3/msvc2013_64_opengl/include/QtCore include\OpenGLWindow.h -o moc\moc_OpenGLWindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -267,6 +273,8 @@ compiler_clean: compiler_moc_header_clean
 
 
 ####### Compile
+
+obj\LOD.obj: src\LOD.cpp 
 
 obj\main.obj: src\main.cpp C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\QGuiApplication \
 		C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\qguiapplication.h \
@@ -1610,7 +1618,8 @@ obj\main.obj: src\main.cpp C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\QGuiApplic
 		C:\boost\boost\smart_ptr\scoped_array.hpp \
 		C:\NGL\include\ngl\AbstractMesh.h \
 		C:\NGL\include\ngl\BBox.h \
-		C:\NGL\include\ngl\NGLassert.h
+		C:\NGL\include\ngl\NGLassert.h \
+		C:\NGL\include\ngl\Obj.h
 
 obj\ModelLOD.obj: src\ModelLOD.cpp C:\boost\boost\bind.hpp \
 		C:\boost\boost\bind\bind.hpp \
@@ -4568,6 +4577,7 @@ obj\NGLScene.obj: src\NGLScene.cpp C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\QM
 		C:\NGL\include\ngl\AbstractMesh.h \
 		C:\NGL\include\ngl\BBox.h \
 		C:\NGL\include\ngl\NGLassert.h \
+		C:\NGL\include\ngl\Obj.h \
 		C:\NGL\include\ngl\Material.h \
 		C:\NGL\include\ngl\NGLInit.h \
 		C:\NGL\include\ngl\Singleton.h \
@@ -4688,6 +4698,10 @@ obj\OpenGLWindow.obj: src\OpenGLWindow.cpp include\OpenGLWindow.h \
 		C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\qfontinfo.h \
 		C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\qfont.h \
 		C:\Qt\5.3\msvc2013_64_opengl\include\QtGui\qfontmetrics.h
+
+obj\Triangle.obj: src\Triangle.cpp 
+
+obj\Vertex.obj: src\Vertex.cpp 
 
 obj\moc_OpenGLWindow.obj: moc\moc_OpenGLWindow.cpp 
 
