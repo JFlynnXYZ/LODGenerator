@@ -8,7 +8,7 @@
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
-#include "ModelLODTri.h"
+//#include "ModelLODTri.h"
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -120,19 +120,19 @@ void NGLScene::initialize()
   // load these values to the shader as well
   m_light->loadToShader("light");
 
-//  // first we create a mesh from an obj passing in the obj file
-//  m_mesh = new ngl::Obj("mesh/Owen.obj");
-//  // scale mesh since it's huge
-//  m_mesh->scale(0.01f,0.01f,0.01f);
-//  // now we need to create this as a VAO so we can draw it
-//  m_mesh->createVAO();
-
   // first we create a mesh from an obj passing in the obj file
-  m_modelLOD = new ModelLODTri("models/Owen.obj");
+  m_model = new ngl::Obj("models/Owen.obj");
   // scale mesh since it's huge
-  m_modelLOD->scale(0.01f,0.01f,0.01f);
+  m_model->scale(0.01f,0.01f,0.01f);
   // now we need to create this as a VAO so we can draw it
-  m_modelLOD->createVAO();
+  m_model->createVAO();
+
+//  // first we create a mesh from an obj passing in the obj file
+  m_modelLOD = new ModelLODTri("models/Owen.obj");
+//  // scale mesh since it's huge
+//  m_modelLOD->scale(0.01f,0.01f,0.01f);
+//  // now we need to create this as a VAO so we can draw it
+//  m_modelLOD->createVAO();
 
   // as re-size is not explicitly called we need to do this.
   // set the viewport for openGL we need to take into account retina display
@@ -191,7 +191,8 @@ void NGLScene::render()
 //  prim->draw();
 
 //  m_mesh->draw();
-  m_modelLOD->draw();
+//  m_modelLOD->draw();
+  m_model->draw();
 
   loadMatricesToShader();
 }

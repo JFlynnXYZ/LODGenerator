@@ -11,6 +11,8 @@ ui_*
 # shadow build directories
 build-*
 Makefile
+Makefile.debug
+Makefile.release
 # Compiled Dynamic libraries
 *.so
 *.dylib
@@ -28,6 +30,11 @@ Makefile
 *.sln
 *.user
 *.filters
+*.ilk
+*.pdb
+*.exe_mainifest.rc
+*.exe_mainifest.res
+*.exe.embed.manifest
 
 # Executables
 *.exe
