@@ -35,6 +35,7 @@ Makefile.release
 *.exe_mainifest.rc
 *.exe_mainifest.res
 *.exe.embed.manifest
+x64
 
 # Executables
 *.exe
