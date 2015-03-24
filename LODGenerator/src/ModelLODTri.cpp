@@ -5,6 +5,7 @@
 
 #include <boost/foreach.hpp>
 #include "ModelLODTri.h"
+#include <iostream>
 //----------------------------------------------------------------------------------------------------------------------
 /// @file ModelLODTri.cpp
 /// @brief implementation files for ModelLODTri class
@@ -117,7 +118,6 @@ void ModelLODTri::parseFace(const char * _begin   )
     f.m_vert.push_back(i-1);
     lodTri->m_vert.push_back(m_lodVertex[i-1]);
   }
-
   // copy the Vertex Indicies into the adjacent vertex for each vertex class and
   // add the adjacent triangles to each vertex.
   for (int i=0; i<vec.size(); i++)
@@ -126,10 +126,10 @@ void ModelLODTri::parseFace(const char * _begin   )
     {
       if (i!=j)
       {
-        m_lodVertex[vec[i]-1]->addAdjVert(m_lodVertex[j-1]);
-        m_lodVertex[vec[i]-1]->addAdjFace(lodTri);
+        m_lodVertex[vec[i]-1]->addAdjVert(m_lodVertex[j]);
       }
     }
+    m_lodVertex[vec[i]-1]->addAdjFace(lodTri);
   }
 
   // merge in texture coordinates and normals, if present
@@ -322,5 +322,10 @@ void ModelLODTri::save(const std::string& _fname)const
   }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+ngl::Vec3 ModelLODTri::getVertexAtVtx(Vertex *_v)
+{
+  return getVertexAtIndex(_v->getID());
+}
 
 

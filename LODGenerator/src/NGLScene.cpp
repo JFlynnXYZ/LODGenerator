@@ -8,7 +8,23 @@
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
-//#include "ModelLODTri.h"
+#include "ModelLODTri.h"
+
+
+int test()
+{
+  std::vector<Triangle *> m_tris;
+  std::vector<Vertex * > m_vrts;
+  m_vrts.push_back(new Vertex(0));
+  m_vrts.push_back(new Vertex(1));
+  m_vrts.push_back(new Vertex(2));
+  std::cout <<"that worked\n";
+  Triangle tri = Triangle(m_vrts[0],m_vrts[1],m_vrts[2]);
+  //m_tris.push_back();
+  std::cout<<"Testing worked\n";
+  return 0;
+}
+
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -120,24 +136,26 @@ void NGLScene::initialize()
   // load these values to the shader as well
   m_light->loadToShader("light");
 
-  // first we create a mesh from an obj passing in the obj file
-  m_model = new ngl::Obj("models/Owen.obj");
-  // scale mesh since it's huge
-  m_model->scale(0.01f,0.01f,0.01f);
-  // now we need to create this as a VAO so we can draw it
-  m_model->createVAO();
-
 //  // first we create a mesh from an obj passing in the obj file
-  m_modelLOD = new ModelLODTri("models/Owen.obj");
+//  m_model = new ngl::Obj("models/Owen.obj");
 //  // scale mesh since it's huge
-//  m_modelLOD->scale(0.01f,0.01f,0.01f);
+//  m_model->scale(0.01f,0.01f,0.01f);
 //  // now we need to create this as a VAO so we can draw it
-//  m_modelLOD->createVAO();
+//  m_model->createVAO();
+
+  // first we create a mesh from an obj passing in the obj file
+  m_modelLOD = new ModelLODTri("models/Owen.obj");
+  // scale mesh since it's huge
+  m_modelLOD->scale(0.01f,0.01f,0.01f);
+  // now we need to create this as a VAO so we can draw it
+  m_modelLOD->createVAO();
 
   // as re-size is not explicitly called we need to do this.
   // set the viewport for openGL we need to take into account retina display
   // etc by using the pixel ratio as a multiplyer
   glViewport(0,0,width()*devicePixelRatio(),height()*devicePixelRatio());
+
+  //test();
 }
 
 
@@ -190,9 +208,8 @@ void NGLScene::render()
 //  prim->draw("teapot");
 //  prim->draw();
 
-//  m_mesh->draw();
-//  m_modelLOD->draw();
-  m_model->draw();
+  m_modelLOD->draw();
+//  m_model->draw();
 
   loadMatricesToShader();
 }

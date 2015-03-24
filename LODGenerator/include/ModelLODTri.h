@@ -65,10 +65,30 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   void save( const std::string& _fname  ) const;
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  method to get a vertex coordinate
-  /// @param[in] _id the vertex id to get
+  /// @brief  method to get a vertex coordinate using a vertex class pointer
+  /// @param[in] _v the vertex pointer for the point you want to get the coordinates for
+  /// @returns Vec3 of the x,y,z coordinates for the vertex
   //----------------------------------------------------------------------------------------------------------------------
-  ngl::Vec3 getVertexCoords( const int _id );
+  ngl::Vec3 getVertexAtVtx( Vertex* _v );
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  calculate the cost of an edge collapse from two vertices
+  /// @param[in] _u vertex pointer, from this vertex collapse cost onto _v
+  /// @param[in] _v vertex pointer, collapse cost onto this vertex from _u
+  /// @returns float of the collapse cost from _u to _v
+  //----------------------------------------------------------------------------------------------------------------------
+  float calculateEColCost( Vertex* _u, Vertex* _v);
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  calculate the cost of all adjacent vertex collapses from selected vertex
+  /// @param[in] _v vertex pointer from which all collapse costs will be calculated
+  //----------------------------------------------------------------------------------------------------------------------
+  void calculateEColCostAtVtx( Vertex* _v);
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  collapse the edge between two vertices
+  /// @param[in] _u vertex pointer, from this vertex collapse onto _v
+  /// @param[in] _v vertex pointer, collapse onto this vertex from _u
+  //----------------------------------------------------------------------------------------------------------------------
+  void collapseEdge( Vertex* _u, Vertex* _v );
+
 protected :
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief parser function to parse the vertex used by boost::spirit parser

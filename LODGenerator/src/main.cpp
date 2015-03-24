@@ -4,7 +4,8 @@ basic OpenGL demo modified from http://qt-project.org/doc/qt-5.0/qtgui/openglwin
 #include <QtGui/QGuiApplication>
 #include <iostream>
 #include "NGLScene.h"
-
+#include "ModelLODTri.h"
+#include "TriangleV.h"
 
 
 int main(int argc, char **argv)
@@ -31,6 +32,7 @@ int main(int argc, char **argv)
   format.setDepthBufferSize(24);
   // now we are going to create our scene window
   NGLScene window;
+
   // and set the OpenGL format
   window.setFormat(format);
   // we can now query the version to see if it worked
@@ -39,6 +41,7 @@ int main(int argc, char **argv)
   window.resize(1024, 720);
   // and finally show
   window.show();
+
 
   return app.exec();
 }
