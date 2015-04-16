@@ -35,7 +35,7 @@ void ModelLODTri::parseVertex( const char *_begin )
   // and add it to our vert list in abstact mesh parent
   m_verts.push_back(ngl::Vec3(values[0],values[1],values[2]));
   // add the vertex id to my custom Vertex class
-  m_lodVertex.push_back(new Vertex(m_verts.size()));
+  m_lodVertex.push_back(new Vertex(m_verts.size()-1));
 }
 
 
@@ -106,7 +106,7 @@ void ModelLODTri::parseFace(const char * _begin   )
   // so now build a face structure.
   ngl::Face f;
   // create my triangle face structure.
-  Triangle* lodTri = new Triangle;
+  Triangle* lodTri = new Triangle(m_lodTriangle.size());
   // verts are -1 the size
   f.m_numVerts=numVerts-1;
   f.m_textureCoord=false;
@@ -126,7 +126,7 @@ void ModelLODTri::parseFace(const char * _begin   )
     {
       if (i!=j)
       {
-        m_lodVertex[vec[i]-1]->addAdjVert(m_lodVertex[j]);
+        m_lodVertex[vec[i]-1]->addAdjVert(m_lodVertex[vec[j]-1]);
       }
     }
     m_lodVertex[vec[i]-1]->addAdjFace(lodTri);
@@ -171,7 +171,10 @@ void ModelLODTri::parseFace(const char * _begin   )
     f.m_textureCoord=true;
 
   }
-// finally save the face into our face list
+  // Calculate the triangle face normal
+  lodTri->calculateNormal(m_verts);
+
+  // finally save the face into our face list
   m_face.push_back(f);
   // save the lod triangle to the triangle list
   m_lodTriangle.push_back(lodTri);
@@ -328,4 +331,27 @@ ngl::Vec3 ModelLODTri::getVertexAtVtx(Vertex *_v)
   return getVertexAtIndex(_v->getID());
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
+{
+  ngl::Real edgeLength = (m_verts[_v->getID()] - m_verts[_u->getID()]).length();
+  ngl::Real curvature = 0;
 
+  std::vector<Triangle *> sideFaces;
+  sideFaces.reserve(2);
+
+  std::vector<Triangle *> uAdjFaces = _u->getAdjacentFaceList();
+
+  // Find what triangles are adjacent to both vertices
+  for (int i=0; i<3; i++)
+  {
+    if(uAdjFaces[i]->hasVert[_v])
+    {
+      sideFaces.push_back(uAdjFaces[i]);
+    }
+  }
+
+  return 0;
+
+  }
+}

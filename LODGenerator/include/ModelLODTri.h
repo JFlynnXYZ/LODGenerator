@@ -71,23 +71,11 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   ngl::Vec3 getVertexAtVtx( Vertex* _v );
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  calculate the cost of an edge collapse from two vertices
-  /// @param[in] _u vertex pointer, from this vertex collapse cost onto _v
-  /// @param[in] _v vertex pointer, collapse cost onto this vertex from _u
-  /// @returns float of the collapse cost from _u to _v
+  /// @brief  method to create a LOD for the current mesh
+  /// @param[in] _nFaces the number of faces the LOD mesh will have
+  /// @returns ModelLODTri* of the reduced mesh LOD with _nFaces
   //----------------------------------------------------------------------------------------------------------------------
-  float calculateEColCost( Vertex* _u, Vertex* _v);
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  calculate the cost of all adjacent vertex collapses from selected vertex
-  /// @param[in] _v vertex pointer from which all collapse costs will be calculated
-  //----------------------------------------------------------------------------------------------------------------------
-  void calculateEColCostAtVtx( Vertex* _v);
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  collapse the edge between two vertices
-  /// @param[in] _u vertex pointer, from this vertex collapse onto _v
-  /// @param[in] _v vertex pointer, collapse onto this vertex from _u
-  //----------------------------------------------------------------------------------------------------------------------
-  void collapseEdge( Vertex* _u, Vertex* _v );
+  ModelLODTri* createLOD( const int _nFaces );
 
 protected :
   //----------------------------------------------------------------------------------------------------------------------
@@ -110,6 +98,24 @@ protected :
   /// @param[in] _begin the start of the string to parse
   //----------------------------------------------------------------------------------------------------------------------
   void parseFace( const char * _begin );
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  calculate the cost of an edge collapse from two vertices
+  /// @param[in] _u vertex pointer, from this vertex collapse cost onto _v
+  /// @param[in] _v vertex pointer, collapse cost onto this vertex from _u
+  /// @returns float of the collapse cost from _u to _v
+  //----------------------------------------------------------------------------------------------------------------------
+  float calculateEColCost( Vertex* _u, Vertex* _v);
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  calculate the cost of all adjacent vertex collapses from selected vertex
+  /// @param[in] _v vertex pointer from which all collapse costs will be calculated
+  //----------------------------------------------------------------------------------------------------------------------
+  void calculateEColCostAtVtx( Vertex* _v);
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  collapse the edge between two vertices
+  /// @param[in] _u vertex pointer, from this vertex collapse onto _v
+  /// @param[in] _v vertex pointer, collapse onto this vertex from _u
+  //----------------------------------------------------------------------------------------------------------------------
+  void collapseEdge( Vertex* _u, Vertex* _v );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief stores the Vertex information in my Vertex class
   //----------------------------------------------------------------------------------------------------------------------

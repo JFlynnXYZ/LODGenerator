@@ -10,22 +10,7 @@
 #include <ngl/ShaderLib.h>
 #include "ModelLODTri.h"
 
-
-int test()
-{
-  std::vector<Triangle *> m_tris;
-  std::vector<Vertex * > m_vrts;
-  m_vrts.push_back(new Vertex(0));
-  m_vrts.push_back(new Vertex(1));
-  m_vrts.push_back(new Vertex(2));
-  std::cout <<"that worked\n";
-  Triangle tri = Triangle(m_vrts[0],m_vrts[1],m_vrts[2]);
-  //m_tris.push_back();
-  std::cout<<"Testing worked\n";
-  return 0;
-}
-
-
+//_model->m_lodTriangle[52]->calculateNormal(_model->getVertexList())
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief the increment for x/y translation with mouse movement
@@ -144,9 +129,9 @@ void NGLScene::initialize()
 //  m_model->createVAO();
 
   // first we create a mesh from an obj passing in the obj file
-  m_modelLOD = new ModelLODTri("models/Owen.obj");
+  m_modelLOD = new ModelLODTri("models/TESTING.obj");
   // scale mesh since it's huge
-  m_modelLOD->scale(0.01f,0.01f,0.01f);
+  m_modelLOD->scale(0.5f,0.5f,0.5f);
   // now we need to create this as a VAO so we can draw it
   m_modelLOD->createVAO();
 
@@ -154,8 +139,7 @@ void NGLScene::initialize()
   // set the viewport for openGL we need to take into account retina display
   // etc by using the pixel ratio as a multiplyer
   glViewport(0,0,width()*devicePixelRatio(),height()*devicePixelRatio());
-
-  //test();
+  render();
 }
 
 
