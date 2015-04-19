@@ -111,6 +111,10 @@ protected :
   //----------------------------------------------------------------------------------------------------------------------
   void calculateEColCostAtVtx( Vertex* _v);
   //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  calculate all edge collapse costs
+  //----------------------------------------------------------------------------------------------------------------------
+  void calculateAllEColCosts();
+  //----------------------------------------------------------------------------------------------------------------------
   /// @brief  collapse the edge between two vertices
   /// @param[in] _u vertex pointer, from this vertex collapse onto _v
   /// @param[in] _v vertex pointer, collapse onto this vertex from _u

@@ -343,15 +343,60 @@ float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
   std::vector<Triangle *> uAdjFaces = _u->getAdjacentFaceList();
 
   // Find what triangles are adjacent to both vertices
-  for (int i=0; i<3; i++)
+  for (int i=0; i < uAdjFaces.size(); ++i)
   {
-    if(uAdjFaces[i]->hasVert[_v])
+    if(uAdjFaces[i]->hasVert(_v))
     {
       sideFaces.push_back(uAdjFaces[i]);
     }
   }
 
-  return 0;
+  // use the triangle facing most away from the this side faces
+  // to determine the curvature term
+  for (int i=0; i < uAdjFaces.size(); ++i)
+  {
+    float minCurve=1; // Curve for face i and the closer side to it
+    for (int j=0; j < sideFaces.size(); ++j)
+    {
+      float dotprod = uAdjFaces[i]->getFaceNormal().dot(sideFaces[j]->getFaceNormal());
+      minCurve = min(minCurve, (1-dotprod)/2.0f);
+    }
+    curvature = max(curvature, minCurve);
+  }
+  // the more coplanar the lower the curvature term
+  return edgeLength * curvature;
+}
+//----------------------------------------------------------------------------------------------------------------------
+void ModelLODTri::calculateEColCostAtVtx( Vertex* _v)
+{
+  if (_v->getAdjacentVertList().size() == 0)
+  {
+    // v doesn't have any adjacent vertices and so it costs nothing to collapse
+    _v->setCollapseVertex(NULL);
+    _v->setCollapseCost(FLT_MIN);
+    return;
+  }
 
+  _v->setCollapseVertex(NULL);
+  _v->setCollapseCost(FLT_MAX);
+  std::vector<Vertex *> vAdjVerts = _v->getAdjacentVertList();
+  // search all adjacent faces for the least cost edge collapse
+  for (int i=0; i<vAdjVerts.size(); ++i)
+  {
+    float cost = calculateEColCost(_v, vAdjVerts[i]);
+    if (cost < _v->getCollapseCost())
+    {
+      _v->setCollapseVertex(vAdjVerts[i]);
+      _v->setCollapseCost(cost);
+    }
+  }
+
+}
+//----------------------------------------------------------------------------------------------------------------------
+void ModelLODTri::calculateAllEColCosts()
+{
+  for (int i=0; i<m_verts.size(); ++i)
+  {
+    calculateEColCostAtVtx(m_lodVertex[i]);
   }
 }

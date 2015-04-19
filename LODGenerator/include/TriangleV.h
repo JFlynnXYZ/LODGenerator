@@ -93,7 +93,7 @@ public:
   /// @brief get list of adjacent triangles
   /// @returns a std::vector containing the adjacent triangle data
   //----------------------------------------------------------------------------------------------------------------------
-  std::vector< Vertex *> getAdjacentFaceList(){return m_faceAdj;}
+  std::vector< Triangle *> getAdjacentFaceList(){return m_faceAdj;}
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief get the collapse cost
   /// @returns a float being the collapse cost value
@@ -224,6 +224,11 @@ public:
   /// @returns an int being the Traingle ID in the m_face list
   //----------------------------------------------------------------------------------------------------------------------
   int getID(){ return m_id; }
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief get Triangle normal
+  /// @returns a Vec4 containing the vector of the triangle normal
+  //----------------------------------------------------------------------------------------------------------------------
+  ngl::Vec4 getFaceNormal(){ return m_fNormal; }
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief calculates normal and stores in m_fNormal
   /// @param[in] _verts the m_vertex list for the ModelLODTri class to access the vertex co-ordinates
