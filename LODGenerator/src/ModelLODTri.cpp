@@ -6,6 +6,7 @@
 #include <boost/foreach.hpp>
 #include "ModelLODTri.h"
 #include <iostream>
+#include <cfloat>
 //----------------------------------------------------------------------------------------------------------------------
 /// @file ModelLODTri.cpp
 /// @brief implementation files for ModelLODTri class
@@ -225,6 +226,13 @@ bool ModelLODTri::load(const std::string &_fname,bool _calcBB )
   m_nTex=m_tex.size();
   m_nFaces=m_face.size();
 
+  // Calculate the Edge Collapse costs at the start
+  calculateAllEColCosts();
+
+  // Deep copy all vertex and triangle values to their Out counterparts
+  m_lodVertexOut.resize(m_lodVertex.size());
+  m_lodTriangleOut.resize(m_lodTriangle.size());
+  copyVtxTriDataToOut();
 
   // Calculate the center of the object.
   if(_calcBB == true)
@@ -359,9 +367,9 @@ float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
     for (int j=0; j < sideFaces.size(); ++j)
     {
       float dotprod = uAdjFaces[i]->getFaceNormal().dot(sideFaces[j]->getFaceNormal());
-      minCurve = min(minCurve, (1-dotprod)/2.0f);
+      minCurve = fmin(minCurve, (1-dotprod)/2.0f);
     }
-    curvature = max(curvature, minCurve);
+    curvature = fmax(curvature, minCurve);
   }
   // the more coplanar the lower the curvature term
   return edgeLength * curvature;
@@ -399,4 +407,47 @@ void ModelLODTri::calculateAllEColCosts()
   {
     calculateEColCostAtVtx(m_lodVertex[i]);
   }
+}
+//----------------------------------------------------------------------------------------------------------------------
+void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
+{
+  if (!v)
+  {
+    // u is a vertex by itself so just delete it
+    delete _u;
+    return;
+  }
+  // store temp u's adjacent verts and faces
+  std::vector<Vertex *> uAdjVerts = _u->getAdjacentVertList();
+  std::vector<Triangle *> uAdjFaces = _u->getAdjacentFaceList();
+
+  // delete triangles on edge uv
+  for ( int i =0; i < uAdjVerts.size(); ++i)
+  {
+    if (uAdjFaces[i]->hasVertex(_v))
+    {
+      delete(_u->face[i]);
+    }
+    // update remaining triangles to have v instead of u
+    // uAdjFaces[i]->replaceVertex(u,v);
+  }
+  // recompute the edge collapse costs for adjacent verts
+  for ( int i=0; i < uAdjVerts.size(); i++)
+  {
+    calculateEColCostAtVtx(uAdjVerts[i]);
+  }
+}
+
+void ModelLODTri::copyVtxTriDataToOut()
+{
+  for ( int i = 0; i < m_lodVertex.size(); ++i )
+  {
+    m_lodVertexOut[i] = m_lodVertex[i]->clone();
+  }
+
+  for ( int i =0; i < m_lodTriangle.size(); ++i)
+  {
+    m_lodTriangleOut[i] = m_lodTriangle[i].clone();
+  }
+
 }

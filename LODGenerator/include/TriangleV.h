@@ -42,6 +42,8 @@ public:
   Vertex( const Vertex& _v ):
     m_id(_v.m_id){;}
   //----------------------------------------------------------------------------------------------------------------------
+  virtual Vertex* clone() const {return (new Vertex(*this));}
+  //----------------------------------------------------------------------------------------------------------------------
   /// @brief check for equality uses FCompare (from Util.h) as float values
   /// @param[in] _v the vertex to check against
   /// @returns true or false
@@ -201,6 +203,8 @@ public:
     m_vert(_t.m_vert),
     m_id(_t.m_id) {;}
 
+  //----------------------------------------------------------------------------------------------------------------------
+  virtual Triangle* clone() const {return (new Triangle(*this));}
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief check for equality uses FCompare (from Util.h) as float values
   /// @param[in] _v the vertex to check against

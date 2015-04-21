@@ -19,6 +19,7 @@
 #include <ngl/RibExport.h>
 #include <cmath>
 #include <stdlib.h>
+#include <list>
 #include "TriangleV.h"
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -54,6 +55,10 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   ModelLODTri( const std::string& _fname,  const std::string& _texName );
   //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  deep copy the class
+  //----------------------------------------------------------------------------------------------------------------------
+  virtual ModelLODTri* clone() const {return (new ModelLODTri(*this));}
+  //----------------------------------------------------------------------------------------------------------------------
   /// @brief  Method to load the file in
   /// @param[in]  _fname the name of the obj file to load
   /// @param[in] _calcBB if we only want to load data and not use GL then set this to false
@@ -76,6 +81,18 @@ public :
   /// @returns ModelLODTri* of the reduced mesh LOD with _nFaces
   //----------------------------------------------------------------------------------------------------------------------
   ModelLODTri* createLOD( const int _nFaces );
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief stores the Vertex information in my Vertex class and stores the necessary data for creating the last LOD created
+  //----------------------------------------------------------------------------------------------------------------------
+  std::vector<Vertex *> m_lodVertexOut;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief stores the face/triangle information in my Triangle class and stores the necessary data for the last LOD created
+  //----------------------------------------------------------------------------------------------------------------------
+  std::vector<Triangle *> m_lodTriangleOut;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief copy Vertex and Triangle information to Out variables
+  //----------------------------------------------------------------------------------------------------------------------
+  void copyVtxTriDataToOut();
 
 protected :
   //----------------------------------------------------------------------------------------------------------------------
@@ -115,7 +132,7 @@ protected :
   //----------------------------------------------------------------------------------------------------------------------
   void calculateAllEColCosts();
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  collapse the edge between two vertices
+  /// @brief  collapse the edge between two vertices. Use vertices from m_lodVertexOut!
   /// @param[in] _u vertex pointer, from this vertex collapse onto _v
   /// @param[in] _v vertex pointer, collapse onto this vertex from _u
   //----------------------------------------------------------------------------------------------------------------------
@@ -128,7 +145,10 @@ protected :
   /// @brief stores the face/triangle information in my Triangle class
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Triangle *> m_lodTriangle;
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief stores the Vertex class info in descending order from collapse cost
+  //----------------------------------------------------------------------------------------------------------------------
+  List<Vertex *> m_lodVertexCollapseCost;
 };
 
 
