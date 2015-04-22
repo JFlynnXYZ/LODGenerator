@@ -229,11 +229,6 @@ bool ModelLODTri::load(const std::string &_fname,bool _calcBB )
   // Calculate the Edge Collapse costs at the start
   calculateAllEColCosts();
 
-  // Deep copy all vertex and triangle values to their Out counterparts
-  m_lodVertexOut.resize(m_lodVertex.size());
-  m_lodTriangleOut.resize(m_lodTriangle.size());
-  copyVtxTriDataToOut();
-
   // Calculate the center of the object.
   if(_calcBB == true)
   {
@@ -407,11 +402,13 @@ void ModelLODTri::calculateAllEColCosts()
   {
     calculateEColCostAtVtx(m_lodVertex[i]);
   }
+  // Deep copy all vertex and triangle values to their Out counterparts
+  copyVtxTriDataToOut();
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
 {
-  if (!v)
+  if (!_v)
   {
     // u is a vertex by itself so just delete it
     delete _u;
@@ -421,33 +418,65 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
   std::vector<Vertex *> uAdjVerts = _u->getAdjacentVertList();
   std::vector<Triangle *> uAdjFaces = _u->getAdjacentFaceList();
 
-  // delete triangles on edge uv
+
   for ( int i =0; i < uAdjVerts.size(); ++i)
   {
-    if (uAdjFaces[i]->hasVertex(_v))
+    if (uAdjFaces[i]->hasVert(_v))
     {
-      delete(_u->face[i]);
+      // delete triangles on edge uv
+      delete(uAdjFaces[i]);
     }
-    // update remaining triangles to have v instead of u
-    // uAdjFaces[i]->replaceVertex(u,v);
+    else
+    {
+      // update remaining triangles to have v instead of u
+      uAdjFaces[i]->replaceVertex(_u,_v);
+    }
   }
+  // delete the vertex _u
+  delete _u;
   // recompute the edge collapse costs for adjacent verts
   for ( int i=0; i < uAdjVerts.size(); i++)
   {
     calculateEColCostAtVtx(uAdjVerts[i]);
   }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::copyVtxTriDataToOut()
 {
-  for ( int i = 0; i < m_lodVertex.size(); ++i )
+  // clear all data currently in the vector
+  clearVtxTriDataOut();
+  // resize the vector to the required size if necessary
+  m_lodVertexOut.resize(m_lodVertex.size());
+  m_lodTriangleOut.resize(m_lodTriangle.size());
+
+  for ( int i=0; i < m_lodVertex.size(); ++i )
   {
+    // copy the data and create a new pointer for each vertex
     m_lodVertexOut[i] = m_lodVertex[i]->clone();
   }
 
-  for ( int i =0; i < m_lodTriangle.size(); ++i)
+  for ( int i=0; i < m_lodTriangle.size(); ++i)
   {
-    m_lodTriangleOut[i] = m_lodTriangle[i].clone();
+    // copy the data and create a new pointer for each triangle
+    m_lodTriangleOut[i] = m_lodTriangle[i]->clone();
   }
 
 }
+//----------------------------------------------------------------------------------------------------------------------
+void ModelLODTri::clearVtxTriDataOut()
+{
+  for ( int i=0; i < m_lodVertexOut.size(); ++i)
+  {
+    delete(m_lodVertexOut[i]);
+  }
+
+  for ( int i=0; i < m_lodTriangleOut.size(); ++i)
+  {
+    delete(m_lodTriangleOut[i]);
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+//ModelLODTri* ModelLODTri::createLOD( const int _nFaces)
+//{
+
+//}

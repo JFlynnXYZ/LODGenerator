@@ -202,7 +202,8 @@ public:
   Triangle( const Triangle &_t ):
     m_vert(_t.m_vert),
     m_id(_t.m_id) {;}
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief deep copy ctor
   //----------------------------------------------------------------------------------------------------------------------
   virtual Triangle* clone() const {return (new Triangle(*this));}
   //----------------------------------------------------------------------------------------------------------------------
@@ -247,6 +248,12 @@ public:
   /// @brief array of three Vertex vertices that make up the triangle
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Vertex *> m_vert;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief updates the face, replacing all of Vertex _u with _v
+  /// @param[in] _u the pointer to the vertex you want to replace
+  /// @param[in] _v the pointer to the vertex you want to use to replace
+  //----------------------------------------------------------------------------------------------------------------------
+  void replaceVertex( Vertex *_u, Vertex *_v);
 
 protected:
 

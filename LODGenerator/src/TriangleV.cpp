@@ -101,7 +101,7 @@ Triangle& Triangle::operator=( Triangle &_t )
   m_id = _t.m_id;
   return *this;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void Triangle::calculateNormal( std::vector<ngl::Vec3> _verts )
 {
   // create two vectors v and w from the triangle's points
@@ -122,10 +122,20 @@ void Triangle::calculateNormal( std::vector<ngl::Vec3> _verts )
     m_fNormal.normalize();
   }
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 bool Triangle::hasVert( Vertex *_v )
 {
   std::vector< Vertex *>::iterator it;
   it = std::find(m_vert.begin(), m_vert.end(), _v);
   return (it != m_vert.end());
+}
+//----------------------------------------------------------------------------------------------------------------------
+void Triangle::replaceVertex(Vertex *_u, Vertex *_v)
+{
+  std::vector< Vertex *>::iterator it;
+  it = std::find(m_vert.begin(), m_vert.end(), _u);
+  if (it != m_vert.end())
+  {
+    m_vert[std::distance(m_vert.begin(), it)] = _v;
+  }
 }
