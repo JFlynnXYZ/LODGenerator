@@ -452,12 +452,14 @@ void ModelLODTri::copyVtxTriDataToOut()
   for ( int i=0; i < m_lodVertex.size(); ++i )
   {
     // copy the data and create a new pointer for each vertex
+	
     m_lodVertexOut[i] = m_lodVertex[i]->clone();
   }
 
   for ( int i=0; i < m_lodTriangle.size(); ++i)
   {
     // copy the data and create a new pointer for each triangle
+	
     m_lodTriangleOut[i] = m_lodTriangle[i]->clone();
   }
 
