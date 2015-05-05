@@ -121,9 +121,9 @@ void ModelLODTri::parseFace(const char * _begin   )
   }
   // copy the Vertex Indicies into the adjacent vertex for each vertex class and
   // add the adjacent triangles to each vertex.
-  for (int i=0; i<vec.size(); i++)
+  for (unsigned int i=0; i<vec.size(); i++)
   {
-    for (int j=0; j<vec.size(); j++)
+    for (unsigned int j=0; j<vec.size(); j++)
     {
       if (i!=j)
       {
@@ -343,25 +343,23 @@ float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
   std::vector<Triangle *> sideFaces;
   sideFaces.reserve(2);
 
-  std::vector<Triangle *> uAdjFaces = _u->getAdjacentFaceList();
-
   // Find what triangles are adjacent to both vertices
-  for (int i=0; i < uAdjFaces.size(); ++i)
+  for (unsigned int i=0; i < _u->m_faceAdj.size(); ++i)
   {
-    if(uAdjFaces[i]->hasVert(_v))
+    if(_u->m_faceAdj[i]->hasVert(_v))
     {
-      sideFaces.push_back(uAdjFaces[i]);
+      sideFaces.push_back(_u->m_faceAdj[i]);
     }
   }
 
   // use the triangle facing most away from the this side faces
   // to determine the curvature term
-  for (int i=0; i < uAdjFaces.size(); ++i)
+  for (unsigned int i=0; i < _u->m_faceAdj.size(); ++i)
   {
     float minCurve=1; // Curve for face i and the closer side to it
-    for (int j=0; j < sideFaces.size(); ++j)
+    for (unsigned int j=0; j < sideFaces.size(); ++j)
     {
-      float dotprod = uAdjFaces[i]->getFaceNormal().dot(sideFaces[j]->getFaceNormal());
+      float dotprod = _u->m_faceAdj[i]->getFaceNormal().dot(sideFaces[j]->getFaceNormal());
       minCurve = fmin(minCurve, (1-dotprod)/2.0f);
     }
     curvature = fmax(curvature, minCurve);
@@ -372,7 +370,7 @@ float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::calculateEColCostAtVtx( Vertex* _v)
 {
-  if (_v->getAdjacentVertList().size() == 0)
+  if (_v->m_vertAdj.size() == 0)
   {
     // v doesn't have any adjacent vertices and so it costs nothing to collapse
     _v->setCollapseVertex(NULL);
@@ -382,14 +380,14 @@ void ModelLODTri::calculateEColCostAtVtx( Vertex* _v)
 
   _v->setCollapseVertex(NULL);
   _v->setCollapseCost(FLT_MAX);
-  std::vector<Vertex *> vAdjVerts = _v->getAdjacentVertList();
+
   // search all adjacent faces for the least cost edge collapse
-  for (int i=0; i<vAdjVerts.size(); ++i)
+  for (unsigned int i=0; i<_v->m_vertAdj.size(); ++i)
   {
-    float cost = calculateEColCost(_v, vAdjVerts[i]);
+    float cost = calculateEColCost(_v, _v->m_vertAdj[i]);
     if (cost < _v->getCollapseCost())
     {
-      _v->setCollapseVertex(vAdjVerts[i]);
+      _v->setCollapseVertex(_v->m_vertAdj[i]);
       _v->setCollapseCost(cost);
     }
   }
@@ -398,7 +396,7 @@ void ModelLODTri::calculateEColCostAtVtx( Vertex* _v)
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::calculateAllEColCosts()
 {
-  for (int i=0; i<m_verts.size(); ++i)
+  for (unsigned int i=0; i<m_verts.size(); ++i)
   {
     calculateEColCostAtVtx(m_lodVertex[i]);
   }
@@ -414,30 +412,27 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     delete _u;
     return;
   }
-  // store temp u's adjacent verts and faces
-  std::vector<Vertex *> uAdjVerts = _u->getAdjacentVertList();
-  std::vector<Triangle *> uAdjFaces = _u->getAdjacentFaceList();
 
 
-  for ( int i =0; i < uAdjVerts.size(); ++i)
+  for ( unsigned int i =0; i < _u->m_vertAdj.size(); ++i)
   {
-    if (uAdjFaces[i]->hasVert(_v))
+    if (_u->m_faceAdj[i]->hasVert(_v))
     {
       // delete triangles on edge uv
-      delete(uAdjFaces[i]);
+      delete(_u->m_faceAdj[i]);
     }
     else
     {
       // update remaining triangles to have v instead of u
-      uAdjFaces[i]->replaceVertex(_u,_v);
+      _u->m_faceAdj[i]->replaceVertex(_u,_v);
     }
   }
   // delete the vertex _u
   delete _u;
   // recompute the edge collapse costs for adjacent verts
-  for ( int i=0; i < uAdjVerts.size(); i++)
+  for ( unsigned int i=0; i < _u->m_vertAdj.size(); i++)
   {
-    calculateEColCostAtVtx(uAdjVerts[i]);
+    calculateEColCostAtVtx(_u->m_vertAdj[i]);
   }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -449,28 +444,46 @@ void ModelLODTri::copyVtxTriDataToOut()
   m_lodVertexOut.resize(m_lodVertex.size());
   m_lodTriangleOut.resize(m_lodTriangle.size());
 
-  for ( int i=0; i < m_lodVertex.size(); ++i )
+  for ( unsigned int i=0; i < m_lodVertex.size(); ++i )
   {
     // copy the data and create a new pointer for each vertex
     m_lodVertexOut[i] = m_lodVertex[i]->clone();
+    // Resize the Adjacent Vert and Face vectors
+    m_lodVertexOut[i]->m_vertAdj.resize(m_lodVertex[i]->m_vertAdj.size());
+    m_lodVertexOut[i]->m_faceAdj.resize(m_lodVertex[i]->m_faceAdj.size());
+
+    // assign adjacent Vert and Face pointers from new Out vectors
+    for (unsigned int j=0; j < fmax(m_lodVertex[i]->m_vertAdj.size(), m_lodVertex[i]->m_faceAdj.size()); ++j)
+    {
+      if (j < m_lodVertex[i]->m_vertAdj.size())
+      {
+        m_lodVertexOut[i]->m_vertAdj[j] = m_lodVertexOut[m_lodVertex[i]->m_vertAdj[j]->getID()];
+      }
+      if (j < m_lodVertex[i]->m_faceAdj.size())
+      {
+        m_lodVertexOut[i]->m_faceAdj[j] = m_lodTriangleOut[m_lodVertex[i]->m_faceAdj[j]->getID()];
+      }
+    }
   }
 
-  for ( int i=0; i < m_lodTriangle.size(); ++i)
+  for ( unsigned int i=0; i < m_lodTriangle.size(); ++i)
   {
     // copy the data and create a new pointer for each triangle
     m_lodTriangleOut[i] = m_lodTriangle[i]->clone();
   }
 
+
+
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::clearVtxTriDataOut()
 {
-  for ( int i=0; i < m_lodVertexOut.size(); ++i)
+  for ( unsigned int i=0; i < m_lodVertexOut.size(); ++i)
   {
     delete(m_lodVertexOut[i]);
   }
 
-  for ( int i=0; i < m_lodTriangleOut.size(); ++i)
+  for ( unsigned int i=0; i < m_lodTriangleOut.size(); ++i)
   {
     delete(m_lodTriangleOut[i]);
   }
