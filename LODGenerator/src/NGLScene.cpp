@@ -132,7 +132,6 @@ void NGLScene::initialize()
   // first we create a mesh from an obj passing in the obj file
   m_modelLOD = new ModelLODTri("models/TESTING.obj");
 
-  std::cout<<m_modelLOD->m_lodVertexOut[100]->m_adjFace[0]->getId();
   // scale mesh since it's huge
   m_modelLOD->scale(0.5f,0.5f,0.5f);
   // now we need to create this as a VAO so we can draw it

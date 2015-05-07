@@ -438,23 +438,31 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::copyVtxTriDataToOut()
 {
-  // clear all data currently in the vector
+  // clear all data currently in the out vectors
   clearVtxTriDataOut();
   // resize the vector to the required size if necessary
   m_lodVertexOut.resize(m_lodVertex.size());
   m_lodTriangleOut.resize(m_lodTriangle.size());
 
-  for ( unsigned int i=0; i < m_lodVertex.size(); ++i )
+  for ( unsigned int i=0; i < fmax( m_lodVertex.size(), m_lodTriangle.size()); ++i )
   {
     // copy the data and create a new pointer for each vertex
-	
-    m_lodVertexOut[i] = m_lodVertex[i]->clone();
-    // Resize the Adjacent Vert and Face vectors
-    m_lodVertexOut[i]->m_vertAdj.resize(m_lodVertex[i]->m_vertAdj.size());
-    m_lodVertexOut[i]->m_faceAdj.resize(m_lodVertex[i]->m_faceAdj.size());
+    if (i < m_lodVertex.size())
+    {
+      m_lodVertexOut[i] = m_lodVertex[i]->clone();
+      // Resize the Adjacent Vert and Face vectors
+      m_lodVertexOut[i]->m_vertAdj.resize(m_lodVertex[i]->m_vertAdj.size());
+      m_lodVertexOut[i]->m_faceAdj.resize(m_lodVertex[i]->m_faceAdj.size());
+    }
+    if (i < m_lodTriangle.size())
+    {
+      m_lodTriangleOut[i] = m_lodTriangle[i]->clone();
+    }
+  }
 
-    // assign adjacent Vert and Face pointers from new Out vectors
-    for (unsigned int j=0; j < fmax(m_lodVertex[i]->m_vertAdj.size(), m_lodVertex[i]->m_faceAdj.size()); ++j)
+  for (unsigned int i=0; i < m_lodVertex.size(); ++i)
+  {
+    for (unsigned int j=0; j< fmax(m_lodVertex[i]->m_vertAdj.size(), m_lodVertex[i]->m_faceAdj.size()); ++j)
     {
       if (j < m_lodVertex[i]->m_vertAdj.size())
       {
@@ -466,16 +474,6 @@ void ModelLODTri::copyVtxTriDataToOut()
       }
     }
   }
-
-  for ( unsigned int i=0; i < m_lodTriangle.size(); ++i)
-  {
-    // copy the data and create a new pointer for each triangle
-	
-    m_lodTriangleOut[i] = m_lodTriangle[i]->clone();
-  }
-
-
-
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::clearVtxTriDataOut()
