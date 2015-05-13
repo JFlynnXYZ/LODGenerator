@@ -20,7 +20,6 @@ Vertex::~Vertex()
     m_vertAdj[i]->m_vertAdj.erase(std::remove(m_vertAdj[i]->m_vertAdj.begin(), m_vertAdj[i]->m_vertAdj.end(), this),
                                   m_vertAdj[i]->m_vertAdj.end());
   }
-  std::cout<<"Deconstructer Called on Vertex\n";
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -209,7 +208,9 @@ void Triangle::replaceVertex(Vertex *_u, Vertex *_v)
     assert(m_vert[i]->hasAdjFace(this)==1);
     for(unsigned int j=0; j<3; j++)
     {
-      if (i != j && std::find(m_vert.begin(), m_vert.end(), _v) != m_vert.end())
+      if (i != j &&
+          std::find(m_vert.begin(), m_vert.end(), _v) != m_vert.end() &&
+          !m_vert[i]->hasAdjVert(m_vert[j]))
       {
           m_vert[i]->m_vertAdj.push_back(m_vert[j]);
       }

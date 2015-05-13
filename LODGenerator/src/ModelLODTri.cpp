@@ -418,30 +418,37 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     return;
   }
 
-  for ( unsigned int i =0; i < _u->m_faceAdj.size(); ++i)
+  std::vector<Vertex *> vertTmp = _u->m_vertAdj;
+
+  for ( int i =_u->m_faceAdj.size()-1; i >= 0; --i)
   {
     if (_u->m_faceAdj[i]->hasVert(_v))
     {
       // add to vectorsToPop for erasing later
       // delete the face data
       delete(_u->m_faceAdj[i]);
-      --i;
     }
-    else
-    {
-      // update remaining triangles to have v instead of u
-      _u->m_faceAdj[i]->replaceVertex(_u,_v);
-      _u->m_faceAdj[i]->calculateNormal(m_verts);
-    }
+  }
+  for ( int i =_u->m_faceAdj.size()-1; i >= 0; --i)
+  {
+    // update remaining triangles to have v instead of u
+    _u->m_faceAdj[i]->replaceVertex(_u,_v);
   }
 
-  // recompute the edge collapse costs for adjacent verts for _v
-  for ( unsigned int i=0; i < _u->m_vertAdj.size(); ++i)
+  for ( int i =_v->m_faceAdj.size()-1; i >= 0; --i)
   {
-    calculateEColCostAtVtx(_u->m_vertAdj[i]);
+    // re-calculate normal
+    _v->m_faceAdj[i]->calculateNormal(m_verts);
+  }
+
+  delete _u;
+  // recompute the edge collapse costs for adjacent verts for _v
+  for ( unsigned int i=0; i < vertTmp.size(); ++i)
+  {
+    calculateEColCostAtVtx(vertTmp[i]);
   }
   // delete the vertex _u
-  delete _u;
+
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::copyVtxTriDataToOut()
@@ -536,13 +543,10 @@ void ModelLODTri::updateCollapseCostList()
 //----------------------------------------------------------------------------------------------------------------------
 ModelLODTri* ModelLODTri::createLOD(const unsigned int _nFaces)
 {
-  for (unsigned int i=0; i < _nFaces; ++i)
+  for (unsigned int i=m_nVerts; i >= _nFaces; --i)
   {
     Vertex* cheapestVertex = m_lodVertexCollapseCost.front();
-    if (i == 4)
-    {
-      std::cout<<"yep";
-    }
+    int vtxID = cheapestVertex->getID();
     m_lodVertexCollapseCost.pop_front();
     collapseEdge(cheapestVertex, cheapestVertex->getCollapseVertex());
     updateCollapseCostList();
