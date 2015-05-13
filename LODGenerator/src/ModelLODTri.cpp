@@ -12,6 +12,7 @@
 /// @brief implementation files for ModelLODTri class
 //----------------------------------------------------------------------------------------------------------------------
 
+// #define NULL 0
 
 // make a namespace for our parser to save writing boost::spirit:: all the time
 namespace spt=boost::spirit;
@@ -424,9 +425,12 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
   {
     if (_u->m_faceAdj[i]->hasVert(_v))
     {
-      // add to vectorsToPop for erasing later
-      // delete the face data
+      // set NULL in triangle out
+      m_lodTriangleOut[_u->m_faceAdj[i]->getID()] = NULL;
+      m_nDeletedFaces += 1;
       delete(_u->m_faceAdj[i]);
+
+
     }
   }
   for ( int i =_u->m_faceAdj.size()-1; i >= 0; --i)
@@ -440,14 +444,14 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     // re-calculate normal
     _v->m_faceAdj[i]->calculateNormal(m_verts);
   }
-
+  // delete the vertex _u
   delete _u;
   // recompute the edge collapse costs for adjacent verts for _v
   for ( unsigned int i=0; i < vertTmp.size(); ++i)
   {
     calculateEColCostAtVtx(vertTmp[i]);
   }
-  // delete the vertex _u
+
 
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -537,19 +541,36 @@ void ModelLODTri::storeCollapseCostList()
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::updateCollapseCostList()
 {
-  m_lodVertexCollapseCost.remove(NULL);
   m_lodVertexCollapseCost.sort(compareVertexCost);
 }
 //----------------------------------------------------------------------------------------------------------------------
 ModelLODTri* ModelLODTri::createLOD(const unsigned int _nFaces)
 {
-  for (unsigned int i=m_nVerts; i >= _nFaces; --i)
+  m_nDeletedFaces = 0;
+  while (m_nDeletedFaces < m_nFaces - _nFaces)
   {
     Vertex* cheapestVertex = m_lodVertexCollapseCost.front();
     int vtxID = cheapestVertex->getID();
     m_lodVertexCollapseCost.pop_front();
     collapseEdge(cheapestVertex, cheapestVertex->getCollapseVertex());
     updateCollapseCostList();
+    m_lodVertexOut[vtxID] = NULL;
+  }
+
+  for (int i=m_lodVertexOut.size(); i>= 0; --i)
+  {
+    if (!m_lodVertexOut[i])
+    {
+      m_lodVertexOut.erase(m_lodVertexOut.begin()+i);
+    }
+  }
+
+  for (int i=m_lodTriangleOut.size(); i>= 0; --i)
+  {
+    if (!m_lodTriangleOut[i])
+    {
+      m_lodTriangleOut.erase(m_lodTriangleOut.begin()+i);
+    }
   }
   return NULL;
 }
