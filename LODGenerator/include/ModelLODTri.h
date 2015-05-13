@@ -33,6 +33,11 @@
 /// @todo add functionality to store adjacent triangles/vertices and use classes
 //----------------------------------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------------------------------
+/// @brief compare two Vertex pointers collapse cost and return the higher one
+/// @returns bool of the higher value
+//----------------------------------------------------------------------------------------------------------------------
+bool compareVertexCost(Vertex*& a, Vertex*& b);
 
 class ModelLODTri : public ngl::AbstractMesh
 {
@@ -74,13 +79,13 @@ public :
   /// @param[in] _v the vertex pointer for the point you want to get the coordinates for
   /// @returns Vec3 of the x,y,z coordinates for the vertex
   //----------------------------------------------------------------------------------------------------------------------
-  ngl::Vec3 getVertexAtVtx( Vertex* _v );
+  ngl::Vec3 getVertexAtVtx(Vertex &_v ) const;
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief  method to create a LOD for the current mesh
   /// @param[in] _nFaces the number of faces the LOD mesh will have
   /// @returns ModelLODTri* of the reduced mesh LOD with _nFaces
   //----------------------------------------------------------------------------------------------------------------------
-  ModelLODTri* createLOD( const int _nFaces );
+  ModelLODTri* createLOD(const unsigned int _nFaces );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief stores the Vertex information in my Vertex class and stores the necessary data for creating the last LOD created
   //----------------------------------------------------------------------------------------------------------------------
@@ -90,6 +95,10 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Triangle *> m_lodTriangleOut;
   //----------------------------------------------------------------------------------------------------------------------
+  /// @brief stores the Vertex class info in descending order from collapse cost
+  //----------------------------------------------------------------------------------------------------------------------
+  std::list<Vertex *> m_lodVertexCollapseCost;
+  //----------------------------------------------------------------------------------------------------------------------
   /// @brief copy Vertex and Triangle information to Out variables
   //----------------------------------------------------------------------------------------------------------------------
   void copyVtxTriDataToOut();
@@ -98,8 +107,17 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   void clearVtxTriDataOut();
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief clear Vertex and Triangle information from Out variables
+  /// @brief store Vertex pointers in descending collapse costs in an ordered list of
   //----------------------------------------------------------------------------------------------------------------------
+  void storeCollapseCostList();
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief clear collapse cost ordered list
+  //----------------------------------------------------------------------------------------------------------------------
+  void clearCollapseCostList();
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @update collapse cost ordered list
+  //----------------------------------------------------------------------------------------------------------------------
+  void updateCollapseCostList();
 
 protected :
   //----------------------------------------------------------------------------------------------------------------------
@@ -153,9 +171,9 @@ protected :
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Triangle *> m_lodTriangle;
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief stores the Vertex class info in descending order from collapse cost
+  /// @brief stores the face/triangle information in my Triangle class
   //----------------------------------------------------------------------------------------------------------------------
-  std::list<Vertex *> m_lodVertexCollapseCost;
+
 };
 
 

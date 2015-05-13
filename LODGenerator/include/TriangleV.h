@@ -45,7 +45,7 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief deconstructor. None of the pointer data stored inside the Vertex class needs deleting unless all data is cleared.
   //----------------------------------------------------------------------------------------------------------------------
-  virtual ~Vertex(){;}
+  virtual ~Vertex();
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief deep copy of the vertex class
   /// @returns Vertex* to a copy of the current Vertex class
@@ -79,6 +79,11 @@ public:
   /// @param[in] pointer to vertex
   //----------------------------------------------------------------------------------------------------------------------
   void remAdjVert( Vertex* _v );
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief removes _v from neighbour list if _v isn't a neighbour
+  /// @param[in] pointer to vertex
+  //----------------------------------------------------------------------------------------------------------------------
+  void remIfNonNeighbour( Vertex* _v );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief add adjacent traingle
   /// @param[in] pointer to triangle face
@@ -116,16 +121,22 @@ public:
   void setCollapseVertex(Vertex* _v){ m_collapseVertex = _v;}
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief finds out if the vertex has a particular adjacent vertex or not
-  /// @param[in] _v the pointer to the vertex to check if it exists adjacen to the vertex
+  /// @param[in] _v the pointer to the vertex to check if it exists adjacent to the vertex
   /// @returns a bool value if the Vertex is adjacent or not
   //----------------------------------------------------------------------------------------------------------------------
   bool hasAdjVert( Vertex *_v);
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief finds out if the vertex has a particular adjacent triangle or not
-  /// @param[in] _t the pointer to the triangle to check if it exists adjacen to the vertex
+  /// @param[in] _t the pointer to the triangle to check if it exists adjacent to the vertex
   /// @returns a bool value if the Triangle is adjacent or not
   //----------------------------------------------------------------------------------------------------------------------
   bool hasAdjFace( Triangle *_t);
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief Returns an iterator to the first element in m_faceAdj
+  /// @param[in] _t the pointer to the triangle to check if it exists adjacent to the vertex
+  /// @returns Triangle* value if the Triangle is adjacent or the function returns last
+  //----------------------------------------------------------------------------------------------------------------------
+  std::vector<Triangle *>::iterator findAdjFace(Triangle *_t);
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief stores the adjacent vertices to the current vertex
   //----------------------------------------------------------------------------------------------------------------------
@@ -157,8 +168,6 @@ class Triangle
 {
 
 public:
-
-  Triangle(){;}
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief default id constructor
   /// @param[in]  _id id number for the face
@@ -203,7 +212,7 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief deconstructor
   //----------------------------------------------------------------------------------------------------------------------
-  virtual ~Triangle(){;}
+  virtual ~Triangle();
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief deep copy of the Triangle class
   /// @returns Triangle* to a copy of the current Triangle class

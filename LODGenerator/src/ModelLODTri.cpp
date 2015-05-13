@@ -19,6 +19,11 @@ namespace spt=boost::spirit;
 // syntactic sugar for specifying our grammar
 typedef spt::rule<spt::phrase_scanner_t> srule;
 
+//----------------------------------------------------------------------------------------------------------------------
+bool compareVertexCost(Vertex*& a, Vertex*& b)
+{
+  return (a->getCollapseCost() < b->getCollapseCost());
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 // parse a vertex
@@ -103,7 +108,7 @@ void ModelLODTri::parseFace(const char * _begin   )
   // now we've done this we can parse
   spt::parse(_begin, face, spt::space_p);
 
-  int numVerts=vec.size();
+  unsigned int numVerts=vec.size();
   // so now build a face structure.
   ngl::Face f;
   // create my triangle face structure.
@@ -329,9 +334,9 @@ void ModelLODTri::save(const std::string& _fname)const
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-ngl::Vec3 ModelLODTri::getVertexAtVtx(Vertex *_v)
+ngl::Vec3 ModelLODTri::getVertexAtVtx( Vertex& _v ) const
 {
-  return getVertexAtIndex(_v->getID());
+  return getVertexAtIndex(_v.getID());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -341,7 +346,6 @@ float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
   ngl::Real curvature = 0;
 
   std::vector<Triangle *> sideFaces;
-  sideFaces.reserve(2);
 
   // Find what triangles are adjacent to both vertices
   for (unsigned int i=0; i < _u->m_faceAdj.size(); ++i)
@@ -402,6 +406,7 @@ void ModelLODTri::calculateAllEColCosts()
   }
   // Deep copy all vertex and triangle values to their Out counterparts
   copyVtxTriDataToOut();
+  storeCollapseCostList();
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
@@ -413,27 +418,30 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     return;
   }
 
-
-  for ( unsigned int i =0; i < _u->m_vertAdj.size(); ++i)
+  for ( unsigned int i =0; i < _u->m_faceAdj.size(); ++i)
   {
     if (_u->m_faceAdj[i]->hasVert(_v))
     {
-      // delete triangles on edge uv
+      // add to vectorsToPop for erasing later
+      // delete the face data
       delete(_u->m_faceAdj[i]);
+      --i;
     }
     else
     {
       // update remaining triangles to have v instead of u
       _u->m_faceAdj[i]->replaceVertex(_u,_v);
+      _u->m_faceAdj[i]->calculateNormal(m_verts);
     }
   }
-  // delete the vertex _u
-  delete _u;
-  // recompute the edge collapse costs for adjacent verts
-  for ( unsigned int i=0; i < _u->m_vertAdj.size(); i++)
+
+  // recompute the edge collapse costs for adjacent verts for _v
+  for ( unsigned int i=0; i < _u->m_vertAdj.size(); ++i)
   {
     calculateEColCostAtVtx(_u->m_vertAdj[i]);
   }
+  // delete the vertex _u
+  delete _u;
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::copyVtxTriDataToOut()
@@ -457,11 +465,17 @@ void ModelLODTri::copyVtxTriDataToOut()
     if (i < m_lodTriangle.size())
     {
       m_lodTriangleOut[i] = m_lodTriangle[i]->clone();
+      // Resize the triangle vert Vector
+      m_lodTriangleOut[i]->m_vert.resize(m_lodTriangle[i]->m_vert.size());
     }
   }
 
+  // Storing the new adjacent vertex and faces
   for (unsigned int i=0; i < m_lodVertex.size(); ++i)
   {
+    // copy over the collapsevertex from the new out Vector
+    m_lodVertexOut[i]->setCollapseVertex(m_lodVertexOut[m_lodVertex[i]->getCollapseVertex()->getID()]);
+    // iterate though the adjacent vertices and triangles for the new cloned for out Vector
     for (unsigned int j=0; j< fmax(m_lodVertex[i]->m_vertAdj.size(), m_lodVertex[i]->m_faceAdj.size()); ++j)
     {
       if (j < m_lodVertex[i]->m_vertAdj.size())
@@ -472,6 +486,15 @@ void ModelLODTri::copyVtxTriDataToOut()
       {
         m_lodVertexOut[i]->m_faceAdj[j] = m_lodTriangleOut[m_lodVertex[i]->m_faceAdj[j]->getID()];
       }
+    }
+  }
+
+  // Storing the new triangle vertices
+  for (unsigned int i=0; i < m_lodTriangle.size(); ++i)
+  {
+    for (unsigned int j=0; j < m_lodTriangle[i]->m_vert.size(); ++j)
+    {
+      m_lodTriangleOut[i]->m_vert[j] = m_lodVertexOut[m_lodTriangle[i]->m_vert[j]->getID()];
     }
   }
 }
@@ -489,7 +512,41 @@ void ModelLODTri::clearVtxTriDataOut()
   }
 }
 //----------------------------------------------------------------------------------------------------------------------
-//ModelLODTri* ModelLODTri::createLOD( const int _nFaces)
-//{
+void ModelLODTri::clearCollapseCostList()
+{
+  m_lodVertexCollapseCost.clear();
+}
 
-//}
+//----------------------------------------------------------------------------------------------------------------------
+void ModelLODTri::storeCollapseCostList()
+{
+  clearCollapseCostList();
+  for (unsigned int i=0; i<m_lodVertexOut.size(); ++i)
+  {
+    m_lodVertexCollapseCost.push_back(m_lodVertexOut[i]);
+  }
+  updateCollapseCostList();
+}
+//----------------------------------------------------------------------------------------------------------------------
+void ModelLODTri::updateCollapseCostList()
+{
+  m_lodVertexCollapseCost.remove(NULL);
+  m_lodVertexCollapseCost.sort(compareVertexCost);
+}
+//----------------------------------------------------------------------------------------------------------------------
+ModelLODTri* ModelLODTri::createLOD(const unsigned int _nFaces)
+{
+  for (unsigned int i=0; i < _nFaces; ++i)
+  {
+    Vertex* cheapestVertex = m_lodVertexCollapseCost.front();
+    if (i == 4)
+    {
+      std::cout<<"yep";
+    }
+    m_lodVertexCollapseCost.pop_front();
+    collapseEdge(cheapestVertex, cheapestVertex->getCollapseVertex());
+    updateCollapseCostList();
+  }
+  return NULL;
+}
+

@@ -137,6 +137,8 @@ void NGLScene::initialize()
   // now we need to create this as a VAO so we can draw it
   m_modelLOD->createVAO();
 
+  m_newLOD = m_modelLOD->createLOD(2000);
+
   // as re-size is not explicitly called we need to do this.
   // set the viewport for openGL we need to take into account retina display
   // etc by using the pixel ratio as a multiplyer
