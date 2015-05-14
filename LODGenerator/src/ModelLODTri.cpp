@@ -281,6 +281,33 @@ ModelLODTri::ModelLODTri( const std::string& _fname,const std::string& _texName 
     m_texture = true;
 }
 
+ModelLODTri::ModelLODTri( ModelLODTri& _m )
+{
+  m_vbo=false;
+  m_vao=false;
+  m_ext=_m.m_ext;
+
+  vtxTriData mVtxTriOut = _m.copyVtxTriData(_m.m_lodVertexOut, _m.m_lodTriangleOut);
+
+  m_lodVertex.resize(mVtxTriOut.size());
+
+  for (int i=0; i<mVtxTriOut.triData.size(); ++i)
+  {
+    unsigned int faceID = mVtxTriOut[i]->getID();
+    unsigned int newID = i;
+    m_lodTriangle[i] = mVtxTriOut[i];
+
+  }
+
+  m_loaded = true;
+  m_texture = false;
+  m_maxX=0.0f; m_maxY=0.0f; m_maxZ=0.0f;
+  m_minX=0.0f; m_minY=0.0f; m_minZ=0.0f;
+  m_nFaces = 0;
+  m_nTex = 0;
+  m_nVerts=mVtxTriOut.vtxData.size();
+  m_nTex=mVtxTriOut.triData.size();
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::save(const std::string& _fname)const
@@ -338,6 +365,11 @@ void ModelLODTri::save(const std::string& _fname)const
 ngl::Vec3 ModelLODTri::getVertexAtVtx( Vertex& _v ) const
 {
   return getVertexAtIndex(_v.getID());
+}
+//----------------------------------------------------------------------------------------------------------------------
+ngl::Face ModelLODTri::getFaceAtTri(Triangle &_t ) const
+{
+ return m_face[_t.getID()];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -406,7 +438,7 @@ void ModelLODTri::calculateAllEColCosts()
     calculateEColCostAtVtx(m_lodVertex[i]);
   }
   // Deep copy all vertex and triangle values to their Out counterparts
-  copyVtxTriDataToOut();
+  copyVtxTriNormTexDataToOut();
   storeCollapseCostList();
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -517,7 +549,7 @@ vtxTriData ModelLODTri::copyVtxTriData(std::vector<Vertex *> _vtxData ,std::vect
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void ModelLODTri::copyVtxTriDataToOut()
+void ModelLODTri::copyVtxTriNormTexDataToOut()
 {
   // clear all data currently in the out vectors
   clearVtxTriDataOut();
@@ -527,6 +559,7 @@ void ModelLODTri::copyVtxTriDataToOut()
 
   m_lodVertexOut = outData.vtxData;
   m_lodTriangleOut = outData.triData;
+
 }
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::clearVtxTriDataOut()
@@ -563,7 +596,10 @@ void ModelLODTri::updateCollapseCostList()
   m_lodVertexCollapseCost.sort(compareVertexCost);
 }
 //----------------------------------------------------------------------------------------------------------------------
-ModelLODTri* ModelLODTri::createLOD(const unsigned int _nFaces)
+
+
+//----------------------------------------------------------------------------------------------------------------------
+ModelLODTri *ModelLODTri::createLOD(const unsigned int _nFaces)
 {
   m_nDeletedFaces = 0;
   while (m_nDeletedFaces < m_nFaces - _nFaces)
@@ -592,10 +628,12 @@ ModelLODTri* ModelLODTri::createLOD(const unsigned int _nFaces)
     }
   }
 
-  ModelLODTri* newLOD = new ModelLODTri;
+
+
+  ModelLODTri* newLOD = new ModelLODTri(*this);
 
 
 
-  return NULL;
+  return newLOD;
 }
 

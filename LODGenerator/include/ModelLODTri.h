@@ -65,9 +65,9 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   ModelLODTri( const std::string& _fname,  const std::string& _texName );
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  deep copy the class
+  /// @brief copy constructor for LOD creation
   //----------------------------------------------------------------------------------------------------------------------
-  virtual ModelLODTri* clone() const {return (new ModelLODTri(*this));}
+  ModelLODTri(ModelLODTri &_m );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief  Method to load the file in
   /// @param[in]  _fname the name of the obj file to load
@@ -85,6 +85,12 @@ public :
   /// @returns Vec3 of the x,y,z coordinates for the vertex
   //----------------------------------------------------------------------------------------------------------------------
   ngl::Vec3 getVertexAtVtx(Vertex &_v ) const;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief  method to get a face class using a triangle class pointer
+  /// @param[in] _t the triangle pointer for the face you want to get the class for
+  /// @returns Face value of triangle class it relates to
+  //----------------------------------------------------------------------------------------------------------------------
+  ngl::Face getFaceAtTri( Triangle& _t ) const;
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief  method to create a LOD for the current mesh
   /// @param[in] _nFaces the number of faces the LOD mesh will have
@@ -112,7 +118,7 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief copy Vertex and Triangle information to Out variables
   //----------------------------------------------------------------------------------------------------------------------
-  void copyVtxTriDataToOut();
+  void copyVtxTriNormTexDataToOut();
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief clear Vertex and Triangle information from Out variables
   //----------------------------------------------------------------------------------------------------------------------
@@ -129,6 +135,10 @@ public :
   /// @update collapse cost ordered list
   //----------------------------------------------------------------------------------------------------------------------
   void updateCollapseCostList();
+
+
+
+
 
 protected :
   //----------------------------------------------------------------------------------------------------------------------
