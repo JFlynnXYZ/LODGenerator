@@ -33,7 +33,6 @@
 /// @date 02/03/15 imported code from Obj.h
 /// @todo add functionality to store adjacent triangles/vertices and use classes
 //----------------------------------------------------------------------------------------------------------------------
-
 struct vtxTriData {
   std::vector<Vertex *> vtxData;
   std::vector<Triangle *> triData;
@@ -65,11 +64,6 @@ public :
   /// @param[in]  &_texName the name of the texture file
   //----------------------------------------------------------------------------------------------------------------------
   ModelLODTri( const std::string& _fname,  const std::string& _texName );
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief constructor to load from a modelLODTri
-  /// @param[in]  _model the modelLOD to copy
-  //----------------------------------------------------------------------------------------------------------------------
-  ModelLODTri( const ModelLODTri _model );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief  deep copy the class
   //----------------------------------------------------------------------------------------------------------------------
