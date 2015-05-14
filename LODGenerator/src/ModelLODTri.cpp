@@ -12,7 +12,7 @@
 /// @brief implementation files for ModelLODTri class
 //----------------------------------------------------------------------------------------------------------------------
 
-// #define NULL 0
+
 
 // make a namespace for our parser to save writing boost::spirit:: all the time
 namespace spt=boost::spirit;
@@ -281,6 +281,11 @@ ModelLODTri::ModelLODTri( const std::string& _fname,const std::string& _texName 
     loadTexture(_texName);
     m_texture = true;
 }
+//----------------------------------------------------------------------------------------------------------------------
+ModelLODTri::ModelLODTri( const ModelLODTri _model )
+{
+;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::save(const std::string& _fname)const
@@ -452,8 +457,69 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     calculateEColCostAtVtx(vertTmp[i]);
   }
 
-
 }
+//----------------------------------------------------------------------------------------------------------------------
+vtxTriData copyVtxTriData(std::vector<Vertex *> _vtxData ,std::vector<Triangle *> _triData)
+{
+  std::vector<Vertex *> newVtxData;
+  std::vector<Triangle *> newTriData;
+  // resize the vector to the required size if necessary
+  newVtxData.resize(_vtxData.size());
+  newTriData.resize(_triData.size());
+
+  for ( unsigned int i=0; i < fmax( _vtxData.size(), _triData.size()); ++i )
+  {
+    // copy the data and create a new pointer for each vertex
+    if (i < _vtxData.size())
+    {
+      newVtxData[i] = _vtxData[i]->clone();
+      // Resize the Adjacent Vert and Face vectors
+      newVtxData[i]->m_vertAdj.resize(_vtxData[i]->m_vertAdj.size());
+      newVtxData[i]->m_faceAdj.resize(_vtxData[i]->m_faceAdj.size());
+    }
+    if (i < _triData.size())
+    {
+      newTriData[i] = _triData[i]->clone();
+      // Resize the triangle vert Vector
+      newTriData[i]->m_vert.resize(_triData[i]->m_vert.size());
+    }
+  }
+
+  // Storing the new adjacent vertex and faces
+  for (unsigned int i=0; i < _vtxData.size(); ++i)
+  {
+    // copy over the collapsevertex from the new out Vector
+    newVtxData[i]->setCollapseVertex(newVtxData[m_lodVertex[i]->getCollapseVertex()->getID()]);
+    // iterate though the adjacent vertices and triangles for the new cloned for out Vector
+    for (unsigned int j=0; j< fmax(_vtxData[i]->m_vertAdj.size(), _vtxData[i]->m_faceAdj.size()); ++j)
+    {
+      if (j < _vtxData[i]->m_vertAdj.size())
+      {
+        newVtxData[i]->m_vertAdj[j] = newVtxData[_vtxData[i]->m_vertAdj[j]->getID()];
+      }
+      if (j < _vtxData[i]->m_faceAdj.size())
+      {
+        newVtxData[i]->m_faceAdj[j] = newTriData[_vtxData[i]->m_faceAdj[j]->getID()];
+      }
+    }
+  }
+
+  // Storing the new triangle vertices
+  for (unsigned int i=0; i < _triData.size(); ++i)
+  {
+    for (unsigned int j=0; j < _triData[i]->m_vert.size(); ++j)
+    {
+      newTriData[i]->m_vert[j] = newVtxData[_triData[i]->m_vert[j]->getID()];
+    }
+  }
+
+  vtxTriData returnData;
+  returnData.vtxData = newVtxData;
+  returnData.triData = newTriData;
+
+  return returnData;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::copyVtxTriDataToOut()
 {

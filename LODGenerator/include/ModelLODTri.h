@@ -13,13 +13,14 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <cmath>
+#include <stdlib.h>
+#include <list>
+#include <utility>
 #include <ngl/Vec4.h>
 #include <ngl/AbstractMesh.h>
 #include <ngl/BBox.h>
 #include <ngl/RibExport.h>
-#include <cmath>
-#include <stdlib.h>
-#include <list>
 #include "TriangleV.h"
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -32,6 +33,11 @@
 /// @date 02/03/15 imported code from Obj.h
 /// @todo add functionality to store adjacent triangles/vertices and use classes
 //----------------------------------------------------------------------------------------------------------------------
+
+struct vtxTriData {
+  std::vector<Vertex *> vtxData;
+  std::vector<Triangle *> triData;
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief compare two Vertex pointers collapse cost and return the higher one
@@ -59,6 +65,11 @@ public :
   /// @param[in]  &_texName the name of the texture file
   //----------------------------------------------------------------------------------------------------------------------
   ModelLODTri( const std::string& _fname,  const std::string& _texName );
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief constructor to load from a modelLODTri
+  /// @param[in]  _model the modelLOD to copy
+  //----------------------------------------------------------------------------------------------------------------------
+  ModelLODTri( const ModelLODTri _model );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief  deep copy the class
   //----------------------------------------------------------------------------------------------------------------------
@@ -98,6 +109,12 @@ public :
   /// @brief stores the Vertex class info in descending order from collapse cost
   //----------------------------------------------------------------------------------------------------------------------
   std::list<Vertex *> m_lodVertexCollapseCost;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief copy the Triangle information and return the lists
+  /// @param[in] _vtxData has to be the exact structure of data from m_lodTriangle or m_lodTriangleOut
+  /// @returns std::vector<Triangle *> of all the triangle data cloned
+  //----------------------------------------------------------------------------------------------------------------------
+  vtxTriData copyVtxTriData(std::vector<Vertex *> _vtxData ,std::vector<Triangle *> _triData);
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief copy Vertex and Triangle information to Out variables
   //----------------------------------------------------------------------------------------------------------------------
