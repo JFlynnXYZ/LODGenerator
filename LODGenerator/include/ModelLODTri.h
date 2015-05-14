@@ -136,10 +136,6 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   void updateCollapseCostList();
 
-  std::vector<ngl::Vec3> m_outNorm;
-  std::vector<ngl::Vec3> m_outTex;
-  std::vector<ngl::Vec3> m_outVert;
-  std::vector<ngl::Face> m_outFace;
 
 
 
@@ -199,7 +195,7 @@ protected :
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief stores current number of deleted faces
   //----------------------------------------------------------------------------------------------------------------------
-  int m_nDeletedFaces;
+  unsigned int m_nDeletedFaces;
 };
 
 

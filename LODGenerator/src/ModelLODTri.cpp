@@ -41,7 +41,7 @@ void ModelLODTri::parseVertex( const char *_begin )
   // and add it to our vert list in abstact mesh parent
   m_verts.push_back(ngl::Vec3(values[0],values[1],values[2]));
   // add the vertex id to my custom Vertex class
-  m_lodVertex.push_back(new Vertex(m_verts.size()-1));
+  m_lodVertex.push_back(new Vertex(m_verts.size()-1, ngl::Vec3(values[0],values[1],values[2])));
 }
 
 
@@ -85,6 +85,7 @@ void ModelLODTri::parseNormal( const char *_begin )
 // parse face
 void ModelLODTri::parseFace(const char * _begin   )
 {
+  int k =0;
   // ok this one is quite complex first create some lists for our face data
   // list to hold the vertex data indices
   std::vector<int> vec;
@@ -148,13 +149,17 @@ void ModelLODTri::parseFace(const char * _begin   )
     {
      std::cerr <<"Something wrong with the face data will continue but may not be correct\n";
     }
-
+    k =0;
     // copy in these references to normal vectors to the mesh's normal vector
     BOOST_FOREACH(int i, nvec)
     {
       f.m_norm.push_back(i-1);
+      lodTri->m_norm.push_back(m_norm[i-1]);
+      lodTri->setNormID(i-1,k);
+      k++;
     }
     f.m_normals=true;
+    lodTri->m_normals=true;
 
   }
 
@@ -167,18 +172,21 @@ void ModelLODTri::parseFace(const char * _begin   )
     {
      std::cerr <<"Something wrong with the face data will continue but may not be correct\n";
     }
-
+    k = 0;
     // copy in these references to normal vectors to the mesh's normal vector
     BOOST_FOREACH(int i, tvec)
     {
       f.m_tex.push_back(i-1);
+      lodTri->m_tex.push_back(m_tex[i-1]);
+      lodTri->setTexID(i-1, k);
     }
 
     f.m_textureCoord=true;
+    lodTri->m_textureCoord=true;
 
   }
   // Calculate the triangle face normal
-  lodTri->calculateNormal(m_verts);
+  lodTri->calculateNormal();
 
   // finally save the face into our face list
   m_face.push_back(f);
@@ -283,20 +291,115 @@ ModelLODTri::ModelLODTri( const std::string& _fname,const std::string& _texName 
 
 ModelLODTri::ModelLODTri( ModelLODTri& _m )
 {
-  m_vbo=false;
-  m_vao=false;
-  m_ext=_m.m_ext;
 
   vtxTriData mVtxTriOut = _m.copyVtxTriData(_m.m_lodVertexOut, _m.m_lodTriangleOut);
-
+  m_vbo=false;
+  m_vao=false;
+  m_ext=0;
+  // set default values
+  m_nVerts=m_nNorm=m_nTex=m_nFaces=0;
   m_loaded = true;
   m_texture = false;
   m_maxX=0.0f; m_maxY=0.0f; m_maxZ=0.0f;
   m_minX=0.0f; m_minY=0.0f; m_minZ=0.0f;
-  m_nFaces = 0;
-  m_nTex = 0;
-  m_nVerts=mVtxTriOut.vtxData.size();
-  m_nTex=mVtxTriOut.triData.size();
+
+
+  m_lodVertex = mVtxTriOut.vtxData;
+  m_lodTriangle = mVtxTriOut.triData;
+
+
+
+  m_face.resize(m_lodTriangle.size());
+
+  std::vector<int> usedVertIDs;
+  std::vector<int> usedNormIDs;
+  std::vector<int> usedTexIDs;
+
+  bool check = true;
+
+  for (unsigned int i=0; i<m_lodTriangle.size(); ++i)
+  {
+    ngl::Face face;
+
+    // Norm Sort out
+    for (unsigned int j=0; j<m_lodTriangle[i]->m_norm.size(); ++j)
+    {
+      for (unsigned int k=0; k<usedNormIDs.size(); ++k)
+      {
+        if (usedNormIDs[k] == m_lodTriangle[i]->getNormID(j))
+        {
+          check = false;
+          break;
+        }
+      }
+      if (check)
+      {
+        m_norm.push_back(m_lodTriangle[i]->m_norm[j]);
+        face.m_norm.push_back(m_norm.size()-1);
+        usedNormIDs.push_back(m_lodTriangle[i]->getNormID(j));
+      }
+      check = true;
+    }
+
+    // Texture sort out
+
+    for (unsigned int j=0; j<m_lodTriangle[i]->m_tex.size(); ++j)
+    {
+      for (unsigned int k=0; k<usedTexIDs.size(); ++k)
+      {
+        if (usedTexIDs[k] == m_lodTriangle[i]->getTexID(j))
+        {
+          check = false;
+          break;
+        }
+      }
+      if (check)
+      {
+        m_tex.push_back(m_lodTriangle[i]->m_tex[j]);
+        face.m_tex.push_back(m_tex.size()-1);
+        usedTexIDs.push_back(m_lodTriangle[i]->getTexID(j));
+      }
+      check = true;
+    }
+
+    // Verts sort out
+
+    for (unsigned int j=0; j<m_lodTriangle[i]->m_vert.size(); ++j)
+    {
+      for (unsigned int k=0; k<usedVertIDs.size(); ++k)
+      {
+        if (usedVertIDs[k] == m_lodTriangle[i]->m_vert[j]->getID())
+        {
+          check = false;
+          break;
+        }
+      }
+      if (check)
+      {
+        m_verts.push_back(m_lodTriangle[i]->m_vert[j]->m_vert);
+        face.m_vert.push_back(m_tex.size()-1);
+        usedVertIDs.push_back(m_lodTriangle[i]->m_vert[j]->getID());
+      }
+      check = true;
+    }
+
+    face.m_normals = m_lodTriangle[i]->m_normals;
+    face.m_numVerts = face.m_vert.size()-1;
+    face.m_textureCoord = m_lodTriangle[i]->m_textureCoord;
+
+    m_face[i] = face;
+  }
+
+
+  m_nVerts=m_verts.size();
+  m_nNorm=m_norm.size();
+  m_nTex=m_tex.size();
+  m_nFaces=m_face.size();
+
+  copyVtxTriNormTexDataToOut();
+
+  this->calcDimensions();
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -460,12 +563,6 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     // update remaining triangles to have v instead of u
     _u->m_faceAdj[i]->replaceVertex(_u,_v);
   }
-
-  for ( int i =_v->m_faceAdj.size()-1; i >= 0; --i)
-  {
-    // re-calculate normal
-    _v->m_faceAdj[i]->calculateNormal(m_verts);
-  }
   // delete the vertex _u
   delete _u;
   // recompute the edge collapse costs for adjacent verts for _v
@@ -618,6 +715,15 @@ ModelLODTri *ModelLODTri::createLOD(const unsigned int _nFaces)
     }
   }
 
+  for (unsigned int i=0; i<m_lodTriangleOut.size(); ++i)
+  {
+    m_lodTriangleOut[i]->setID(i);
+  }
+
+  for (unsigned int i=0; i<m_lodVertexOut.size(); ++i)
+  {
+    m_lodVertexOut[i]->setID(i);
+  }
 
 
   ModelLODTri* newLOD = new ModelLODTri(*this);

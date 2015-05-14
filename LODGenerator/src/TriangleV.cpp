@@ -154,16 +154,16 @@ Triangle& Triangle::operator=( Triangle &_t )
   return *this;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void Triangle::calculateNormal( std::vector<ngl::Vec3> _verts )
+void Triangle::calculateNormal()
 {
   // create two vectors v and w from the triangle's points
-  ngl::Real v[3] = {( _verts[m_vert[1]->getID()].m_x - _verts[m_vert[0]->getID()].m_x ),
-                    ( _verts[m_vert[1]->getID()].m_y - _verts[m_vert[0]->getID()].m_y ),
-                    ( _verts[m_vert[1]->getID()].m_z - _verts[m_vert[0]->getID()].m_z )};
+  ngl::Real v[3] = {( m_vert[1]->m_vert.m_x - m_vert[0]->m_vert.m_x ),
+                    ( m_vert[1]->m_vert.m_y - m_vert[0]->m_vert.m_y ),
+                    ( m_vert[1]->m_vert.m_z - m_vert[0]->m_vert.m_z )};
 
-  ngl::Real w[3] = {( _verts[m_vert[2]->getID()].m_x - _verts[m_vert[0]->getID()].m_x ),
-                    ( _verts[m_vert[2]->getID()].m_y - _verts[m_vert[0]->getID()].m_y ),
-                    ( _verts[m_vert[2]->getID()].m_z - _verts[m_vert[0]->getID()].m_z )};
+  ngl::Real w[3] = {( m_vert[2]->m_vert.m_x - m_vert[0]->m_vert.m_x ),
+                    ( m_vert[2]->m_vert.m_y - m_vert[0]->m_vert.m_y ),
+                    ( m_vert[2]->m_vert.m_z - m_vert[0]->m_vert.m_z )};
   // cross product the two vectors
   m_fNormal.m_x = (v[1]*w[2]) - (v[2]*w[1]);
   m_fNormal.m_y = (v[2]*w[0]) - (v[0]*w[2]);
@@ -216,6 +216,6 @@ void Triangle::replaceVertex(Vertex *_u, Vertex *_v)
       }
     }
   }
-  //calculateNormal();
+  calculateNormal();
 }
 

@@ -135,9 +135,13 @@ void NGLScene::initialize()
   // scale mesh since it's huge
   m_modelLOD->scale(0.5f,0.5f,0.5f);
   // now we need to create this as a VAO so we can draw it
-  m_modelLOD->createVAO();
+  //m_modelLOD->createVAO();
+
 
   m_newLOD = m_modelLOD->createLOD(2000);
+  m_newLOD->scale(0.5f,0.5f,0.5f);
+  int m_dataPackType=GL_TRIANGLES;
+  m_newLOD->createVAO();
 
   // as re-size is not explicitly called we need to do this.
   // set the viewport for openGL we need to take into account retina display
@@ -196,7 +200,7 @@ void NGLScene::render()
 //  prim->draw("teapot");
 //  prim->draw();
 
-  m_modelLOD->draw();
+  m_newLOD->draw();
 //  m_model->draw();
 
   loadMatricesToShader();
