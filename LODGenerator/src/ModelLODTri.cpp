@@ -289,16 +289,6 @@ ModelLODTri::ModelLODTri( ModelLODTri& _m )
 
   vtxTriData mVtxTriOut = _m.copyVtxTriData(_m.m_lodVertexOut, _m.m_lodTriangleOut);
 
-  m_lodVertex.resize(mVtxTriOut.size());
-
-  for (int i=0; i<mVtxTriOut.triData.size(); ++i)
-  {
-    unsigned int faceID = mVtxTriOut[i]->getID();
-    unsigned int newID = i;
-    m_lodTriangle[i] = mVtxTriOut[i];
-
-  }
-
   m_loaded = true;
   m_texture = false;
   m_maxX=0.0f; m_maxY=0.0f; m_maxZ=0.0f;

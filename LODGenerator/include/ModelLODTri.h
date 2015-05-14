@@ -136,6 +136,11 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   void updateCollapseCostList();
 
+  std::vector<ngl::Vec3> m_outNorm;
+  std::vector<ngl::Vec3> m_outTex;
+  std::vector<ngl::Vec3> m_outVert;
+  std::vector<ngl::Face> m_outFace;
+
 
 
 
