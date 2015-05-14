@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cfloat>
 #include "TriangleV.h"
+#include <map>
 //----------------------------------------------------------------------------------------------------------------------
 /// @file ModelLODTri.cpp
 /// @brief implementation files for ModelLODTri class
@@ -311,12 +312,10 @@ ModelLODTri::ModelLODTri( ModelLODTri& _m )
 
   m_face.resize(m_lodTriangle.size());
 
-  std::vector<int> usedVertIDs;
-  std::vector<int> usedNormIDs;
-  std::vector<int> usedTexIDs;
-
-  bool check = true;
-
+  std::map <int, int> oldNewIDVtxMatch;
+  std::map <int, int> oldNewIDNormMatch;
+  std::map <int, int> oldNewIDTexMatch;
+  int newID;
   for (unsigned int i=0; i<m_lodTriangle.size(); ++i)
   {
     ngl::Face face;
@@ -324,63 +323,51 @@ ModelLODTri::ModelLODTri( ModelLODTri& _m )
     // Norm Sort out
     for (unsigned int j=0; j<m_lodTriangle[i]->m_norm.size(); ++j)
     {
-      for (unsigned int k=0; k<usedNormIDs.size(); ++k)
-      {
-        if (usedNormIDs[k] == m_lodTriangle[i]->getNormID(j))
-        {
-          check = false;
-          break;
-        }
-      }
-      if (check)
+      if (oldNewIDNormMatch.find(m_lodTriangle[i]->getNormID(j)) == oldNewIDNormMatch.end())
       {
         m_norm.push_back(m_lodTriangle[i]->m_norm[j]);
-        face.m_norm.push_back(m_norm.size()-1);
-        usedNormIDs.push_back(m_lodTriangle[i]->getNormID(j));
+        newID = m_norm.size()-1;
+        face.m_norm.push_back(newID);
+        oldNewIDNormMatch[m_lodTriangle[i]->getNormID(j)]=newID;
       }
-      check = true;
+      else
+      {
+        face.m_norm.push_back(oldNewIDNormMatch[m_lodTriangle[i]->getNormID(j)]);
+      }
     }
 
-    // Texture sort out
 
+    // Texture sort out
     for (unsigned int j=0; j<m_lodTriangle[i]->m_tex.size(); ++j)
     {
-      for (unsigned int k=0; k<usedTexIDs.size(); ++k)
-      {
-        if (usedTexIDs[k] == m_lodTriangle[i]->getTexID(j))
-        {
-          check = false;
-          break;
-        }
-      }
-      if (check)
+      if (oldNewIDTexMatch.find(m_lodTriangle[i]->getTexID(j)) == oldNewIDTexMatch.end())
       {
         m_tex.push_back(m_lodTriangle[i]->m_tex[j]);
-        face.m_tex.push_back(m_tex.size()-1);
-        usedTexIDs.push_back(m_lodTriangle[i]->getTexID(j));
+        newID = m_tex.size()-1;
+        face.m_tex.push_back(newID);
+        oldNewIDTexMatch[m_lodTriangle[i]->getTexID(j)]=newID;
       }
-      check = true;
+      else
+      {
+        face.m_tex.push_back(oldNewIDTexMatch[m_lodTriangle[i]->getTexID(j)]);
+      }
     }
 
     // Verts sort out
 
     for (unsigned int j=0; j<m_lodTriangle[i]->m_vert.size(); ++j)
     {
-      for (unsigned int k=0; k<usedVertIDs.size(); ++k)
-      {
-        if (usedVertIDs[k] == m_lodTriangle[i]->m_vert[j]->getID())
-        {
-          check = false;
-          break;
-        }
-      }
-      if (check)
+      if (oldNewIDVtxMatch.find(m_lodTriangle[i]->m_vert[j]->getID()) == oldNewIDVtxMatch.end())
       {
         m_verts.push_back(m_lodTriangle[i]->m_vert[j]->m_vert);
-        face.m_vert.push_back(m_tex.size()-1);
-        usedVertIDs.push_back(m_lodTriangle[i]->m_vert[j]->getID());
+        newID = m_verts.size()-1;
+        face.m_vert.push_back(newID);
+        oldNewIDVtxMatch[m_lodTriangle[i]->m_vert[j]->getID()]=newID;
       }
-      check = true;
+      else
+      {
+        face.m_vert.push_back(oldNewIDVtxMatch[m_lodTriangle[i]->m_vert[j]->getID()]);
+      }
     }
 
     face.m_normals = m_lodTriangle[i]->m_normals;
@@ -397,6 +384,7 @@ ModelLODTri::ModelLODTri( ModelLODTri& _m )
   m_nFaces=m_face.size();
 
   copyVtxTriNormTexDataToOut();
+  storeCollapseCostList();
 
   this->calcDimensions();
 

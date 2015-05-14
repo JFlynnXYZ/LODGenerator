@@ -18,7 +18,7 @@
 #include <list>
 #include <utility>
 #include <ngl/Vec4.h>
-#include <ngl/AbstractMesh.h>
+#include "AbstractMesh.h"
 #include <ngl/BBox.h>
 #include <ngl/RibExport.h>
 #include "TriangleV.h"

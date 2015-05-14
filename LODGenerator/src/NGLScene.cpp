@@ -133,15 +133,15 @@ void NGLScene::initialize()
   m_modelLOD = new ModelLODTri("models/TESTING.obj");
 
   // scale mesh since it's huge
-  m_modelLOD->scale(0.5f,0.5f,0.5f);
+  //m_modelLOD->scale(0.5f,0.5f,0.5f);
   // now we need to create this as a VAO so we can draw it
   //m_modelLOD->createVAO();
 
 
   m_newLOD = m_modelLOD->createLOD(2000);
-  m_newLOD->scale(0.5f,0.5f,0.5f);
-  int m_dataPackType=GL_TRIANGLES;
   m_newLOD->createVAO();
+
+  m_newLOD->save("models/result.obj");
 
   // as re-size is not explicitly called we need to do this.
   // set the viewport for openGL we need to take into account retina display
