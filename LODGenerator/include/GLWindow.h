@@ -32,12 +32,24 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   GLWindow(const QGLFormat _format,QWidget *_parent );
 
-  unsigned int m_selectedModel;
+  int m_selectedModel;
+
+  ModelLODTri* getModelLODTri(){return m_modelLOD;}
 
 		/// @brief dtor
 	~GLWindow();
 
-    void setModelLOD(const std::string _fname);
+  void setModelLOD(const std::string _fname);
+
+  void createLOD(unsigned int _nFaces);
+
+  std::vector<ModelLODTri *> getLODs(){return m_lods;}
+
+  void extUpdateGL(){updateGL();}
+
+  /// @brief this is the main gl drawing routine which is called whenever the window needs to
+  // be re-drawn
+  void paintGL();
  public slots :
 	/// @brief a slot to toggle wireframe mode
 	/// @param[in] _mode the mode passed from the toggle
@@ -87,12 +99,50 @@ private :
   ngl::Vec3 m_position;
 	/// @brief our object to draw
 	int m_selectedObject;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief used to store the x rotation mouse value
+  //----------------------------------------------------------------------------------------------------------------------
+  int m_spinXFace;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief used to store the y rotation mouse value
+  //----------------------------------------------------------------------------------------------------------------------
+  int m_spinYFace;
 	//----------------------------------------------------------------------------------------------------------------------
 	// text for rendering
 	//----------------------------------------------------------------------------------------------------------------------
 	ngl::Text *m_text;
-
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief the previous x mouse value
+  //----------------------------------------------------------------------------------------------------------------------
+  int m_origX;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief the previous y mouse value
+  //----------------------------------------------------------------------------------------------------------------------
+  int m_origY;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief the previous x mouse value for Position changes
+  //----------------------------------------------------------------------------------------------------------------------
+  int m_origXPos;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief the previous y mouse value for Position changes
+  //----------------------------------------------------------------------------------------------------------------------
+  int m_origYPos;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief the model position for mouse movement
+  //----------------------------------------------------------------------------------------------------------------------
+  ngl::Vec3 m_modelPos;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief flag to indicate if the mouse button is pressed when dragging
+  //----------------------------------------------------------------------------------------------------------------------
+  bool m_rotate;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief flag to indicate if the Right mouse button is pressed when dragging
+  //----------------------------------------------------------------------------------------------------------------------
+  bool m_translate;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief used to store the global mouse transforms
+  //----------------------------------------------------------------------------------------------------------------------
+  ngl::Mat4 m_mouseGlobalTX;
 
 
 
@@ -106,9 +156,7 @@ protected:
   /// @param[in] _w the width of the resized window
   /// @param[in] _h the height of the resized window
   void resizeGL(const int _w, const int _h );
-  /// @brief this is the main gl drawing routine which is called whenever the window needs to
-  // be re-drawn
-  void paintGL();
+
 
 	/// @brief our camera
 	ngl::Camera *m_camera;
@@ -129,6 +177,13 @@ private :
   /// inherited from QObject and overridden here.
   /// @param _event the Qt Event structure
   void mouseReleaseEvent (QMouseEvent *_event );
+
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief this method is called everytime the mouse wheel is moved
+  /// inherited from QObject and overridden here.
+  /// @param _event the Qt Event structure
+  //----------------------------------------------------------------------------------------------------------------------
+  void wheelEvent( QWheelEvent *_event);
 
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief method to load transform matrices to the shader

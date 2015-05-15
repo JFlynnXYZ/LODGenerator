@@ -21,6 +21,10 @@ private slots:
 
   void on_m_lods_clicked(const QModelIndex &index);
 
+  void on_deleteLODB_clicked();
+
+  void on_createLODB_clicked();
+
 private:
   Ui::MainWindow *m_ui;
   /// @brief our openGL widget

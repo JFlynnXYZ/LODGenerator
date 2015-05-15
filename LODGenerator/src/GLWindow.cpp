@@ -8,6 +8,15 @@
 #include <ngl/ShaderLib.h>
 #include <QColorDialog>
 
+//----------------------------------------------------------------------------------------------------------------------
+/// @brief the increment for x/y translation with mouse movement
+//----------------------------------------------------------------------------------------------------------------------
+const static float INCREMENT=0.01f;
+//----------------------------------------------------------------------------------------------------------------------
+/// @brief the increment for the wheel zoom
+//----------------------------------------------------------------------------------------------------------------------
+const static float ZOOM=0.1f;
+
 
 //----------------------------------------------------------------------------------------------------------------------
 GLWindow::GLWindow(const QGLFormat _format, QWidget *_parent ) : QGLWidget( _format, _parent )
@@ -24,6 +33,9 @@ GLWindow::GLWindow(const QGLFormat _format, QWidget *_parent ) : QGLWidget( _for
 
 	m_selectedObject=0;
 
+
+  m_spinXFace=0.0f;
+  m_spinYFace=0.0f;
 }
 
 // This virtual function is called once before the first call to paintGL() or resizeGL(),
@@ -41,7 +53,7 @@ void GLWindow::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
   /// create our camera
-  ngl::Vec3 eye(2,2,2);
+  ngl::Vec3 eye(0,4,4);
   ngl::Vec3 look(0,0,0);
   ngl::Vec3 up(0,1,0);
 
@@ -104,6 +116,8 @@ void GLWindow::initializeGL()
 
   m_modelLOD = NULL;
   m_selectedModel = -2;
+
+  glViewport(0,0,width()*devicePixelRatio(),height()*devicePixelRatio());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -121,15 +135,14 @@ void GLWindow::resizeGL( int _w, int _h )
 void GLWindow::loadMatricesToShader()
 {
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  (*shader)["Phong"]->use();
 
   ngl::Mat4 MV;
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
   ngl::Mat4 M;
-  M=m_transform.getMatrix();
-  MV=m_transform.getMatrix()*m_camera->getViewMatrix();
-  MVP=MV*m_camera->getProjectionMatrix() ;
+  M=m_mouseGlobalTX;
+  MV=M*m_camera->getViewMatrix();
+  MVP=M*m_camera->getVPMatrix() ;
   normalMatrix=MV;
   normalMatrix.inverse();
   shader->setShaderParamFromMat4("MV",MV);
@@ -159,11 +172,31 @@ void GLWindow::paintGL()
 	m_transform.setPosition(m_position);
 	m_transform.setScale(m_scale);
 	m_transform.setRotation(m_rotation);
-  if (m_selectedModel == -1 && m_modelLOD != NULL)
-    m_modelLOD->draw();
-  else if (m_selectedModel > -1)
-    m_lods[m_selectedModel]->draw();
+
+
+  // Rotation based on the mouse position for our global transform
+  ngl::Mat4 rotX;
+  ngl::Mat4 rotY;
+  // create the rotation matrices
+  rotX.rotateX(m_spinXFace);
+  rotY.rotateY(m_spinYFace);
+  // multiply the rotations
+  m_mouseGlobalTX=rotY*rotX;
+  // add the translations
+  m_mouseGlobalTX.m_m[3][0] = m_modelPos.m_x;
+  m_mouseGlobalTX.m_m[3][1] = m_modelPos.m_y;
+  m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
+
   loadMatricesToShader();
+  if (m_selectedModel == -1 && m_modelLOD != NULL)
+  {
+    m_modelLOD->draw();
+  }
+  else if (m_selectedModel > -1)
+  {
+    m_lods[m_selectedModel]->draw();
+  }
+
   m_text->renderText(10,10,"LODGenerator");
 }
 
@@ -174,24 +207,88 @@ void GLWindow::paintGL()
 //----------------------------------------------------------------------------------------------------------------------
 void GLWindow::mouseMoveEvent ( QMouseEvent * _event )
 {
-  Q_UNUSED(_event);
+  // note the method buttons() is the button state when event was called
+  // this is different from button() which is used to check which button was
+  // pressed when the mousePress/Release event is generated
+  if(m_rotate && _event->buttons() == Qt::LeftButton)
+  {
+    int diffx=_event->x()-m_origX;
+    int diffy=_event->y()-m_origY;
+    m_spinXFace += (float) 0.5f * diffy;
+    m_spinYFace += (float) 0.5f * diffx;
+    m_origX = _event->x();
+    m_origY = _event->y();
+    updateGL();
+
+  }
+        // right mouse translate code
+  else if(m_translate && _event->buttons() == Qt::RightButton)
+  {
+    int diffX = (int)(_event->x() - m_origXPos);
+    int diffY = (int)(_event->y() - m_origYPos);
+    m_origXPos=_event->x();
+    m_origYPos=_event->y();
+    m_modelPos.m_x += INCREMENT * diffX;
+    m_modelPos.m_y -= INCREMENT * diffY;
+    updateGL();
+
+   }
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
 void GLWindow::mousePressEvent (QMouseEvent * _event  )
 {
-  Q_UNUSED(_event);
+  // this method is called when the mouse button is pressed in this case we
+  // store the value where the maouse was clicked (x,y) and set the Rotate flag to true
+  if(_event->button() == Qt::LeftButton)
+  {
+    m_origX = _event->x();
+    m_origY = _event->y();
+    m_rotate =true;
+  }
+  // right mouse translate mode
+  else if(_event->button() == Qt::RightButton)
+  {
+    m_origXPos = _event->x();
+    m_origYPos = _event->y();
+    m_translate=true;
+  }
+
 
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void GLWindow::mouseReleaseEvent (  QMouseEvent * _event  )
 {
-  Q_UNUSED(_event);
+  // this event is called when the mouse button is released
+  // we then set Rotate to false
+  if (_event->button() == Qt::LeftButton)
+  {
+    m_rotate=false;
+  }
+        // right mouse translate mode
+  if (_event->button() == Qt::RightButton)
+  {
+    m_translate=false;
+  }
 
 }
+//----------------------------------------------------------------------------------------------------------------------
+void GLWindow::wheelEvent(QWheelEvent *_event)
+{
 
+  // check the diff of the wheel position (0 means no change)
+  if(_event->delta() > 0)
+  {
+    m_modelPos.m_z+=ZOOM;
+  }
+  else if(_event->delta() <0 )
+  {
+    m_modelPos.m_z-=ZOOM;
+  }
+  updateGL();
+}
 
 
 GLWindow::~GLWindow()
@@ -276,9 +373,14 @@ void GLWindow::setModelLOD(const std::string _fname)
 {
   if (m_modelLOD!=NULL )
   {
-    std::cout<<"Waattttt\n";
     delete(m_modelLOD);
   }
   m_modelLOD = new ModelLODTri(_fname);
   m_modelLOD->createVAO();
+  updateGL();
+}
+
+void GLWindow::createLOD(unsigned int _nFaces)
+{
+  m_lods.push_back(m_modelLOD->createLOD(_nFaces));
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -155,7 +155,6 @@
           </item>
          </layout>
          <zorder>nFaces</zorder>
-         <zorder>nFaces</zorder>
          <zorder>createLODB</zorder>
          <zorder>label_3</zorder>
         </widget>
@@ -218,7 +217,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1280</width>
      <height>23</height>
     </rect>
    </property>

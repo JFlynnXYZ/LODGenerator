@@ -3,6 +3,11 @@
 #include <QFileDialog>
 #include <iostream>
 
+#include <sstream>
+
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
   m_ui(new Ui::MainWindow)
@@ -61,13 +66,42 @@ void MainWindow::on_loadB_clicked()
     m_ui->pathLE->setText(fileName);
     m_ui->fileNameL->setText(file);
     m_gl->setModelLOD(fileName.toLocal8Bit().constData());
-    //m_ui->
+    m_ui->nFaces->setMaximum(m_gl->getModelLODTri()->getNumFaces()-1);
+    m_ui->nFaces->setValue(m_gl->getModelLODTri()->getNumFaces()-1);
+    ;
   }
 }
 
 void MainWindow::on_m_lods_clicked(const QModelIndex &index)
 {
-  int val = index.column();
-  m_gl->m_selectedModel = val-1;
+  std::string str = index.data().toString().toLocal8Bit().constData();
+  if (str == "BaseMesh")
+  {
+    m_gl->m_selectedModel = -1;
+    if (m_gl->getModelLODTri() != NULL)
+    {
+      m_ui->nFaces->setMaximum(m_gl->getModelLODTri()->getNumFaces()-1);
+      m_ui->nFaces->setValue(m_gl->getModelLODTri()->getNumFaces()-1);
+    }
+  }
+  else
+    {
+    m_gl->m_selectedModel = index.data().toInt()-1;
+    m_ui->nFaces->setMaximum(m_gl->getLODs()[m_gl->m_selectedModel]->getNumFaces()-1);
+    m_ui->nFaces->setValue(m_gl->getLODs()[m_gl->m_selectedModel]->getNumFaces()-1);
+    }
+  m_gl->extUpdateGL();
 
+}
+
+void MainWindow::on_deleteLODB_clicked()
+{
+;
+}
+
+void MainWindow::on_createLODB_clicked()
+{
+  m_gl->createLOD(m_ui->nFaces->value());
+  QString id = SSTR(m_gl->getLODs().size()).c_str();
+  m_ui->m_lods->addItem(id);
 }
