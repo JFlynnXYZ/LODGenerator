@@ -1,0 +1,18 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_g_l_window.html#a1376e51f5b5141f37d599cdbe9c5014f" title="GLWindow::createLOD" alt="" coords="341,216,515,245"/>
+<area shape="rect" id="node30" href="$class_g_l_window.html#ac7616ea5f5e197652a5094bab51b54e4" title="GLWindow::extUpdateGL" alt="" coords="333,269,523,299"/>
+<area shape="rect" id="node32" href="$class_g_l_window.html#a547a59c0d215d7177005f2862dd7144f" title="GLWindow::getLODs" alt="" coords="348,323,508,352"/>
+<area shape="rect" id="node34" href="$class_g_l_window.html#a20b0ecd27e8d1c4b301d36285a2b6fba" title="GLWindow::updateAllLODs" alt="" coords="329,376,527,405"/>
+<area shape="rect" id="node5" href="$class_model_l_o_d_tri.html#a6de254a9e571eb6c89836f437bd96fe8" title="method to create a LOD for the current mesh" alt="" coords="576,216,768,245"/>
+<area shape="rect" id="node7" href="$class_model_l_o_d_tri.html#a40dddc8c3dd293d8ba41eea8e91df321" title="collapse the edge between two vertices. Use vertices from m_lodVertexOut!" alt="" coords="853,99,1056,128"/>
+<area shape="rect" id="node13" href="$class_vertex.html#a03fab663348d118917946606fdd270fa" title="get vertex id" alt="" coords="1757,85,1875,115"/>
+<area shape="rect" id="node19" href="$class_vertex.html#ae26413ffaebb8b51d933a62d7f4b98f1" title="get the collapse vertex for the m_cost value" alt="" coords="853,216,1056,245"/>
+<area shape="rect" id="node22" href="$class_model_l_o_d_tri.html#a406d99731345cc3d348eaddabb3fe94a" title="default constructor" alt="" coords="855,269,1055,299"/>
+<area shape="rect" id="node24" href="$class_model_l_o_d_tri.html#ac9c7e47403a5576b5b13c18cc2c4ab33" title="update collapse cost ordered list" alt="" coords="816,323,1093,352"/>
+<area shape="rect" id="node9" href="$class_model_l_o_d_tri.html#ac73a2ba7a8ca5ef5e8c9cd34c34063e1" title="calculate the cost of all adjacent vertex collapses from selected vertex" alt="" coords="1141,85,1421,115"/>
+<area shape="rect" id="node11" href="$class_model_l_o_d_tri.html#ac8547e039d8991ae67c9bdbef4e7db85" title="calculate the cost of an edge collapse from two vertices" alt="" coords="1469,5,1709,35"/>
+<area shape="rect" id="node15" href="$class_vertex.html#a0a096ee053dca43961ed9003a90a5ee6" title="set the collapse cost" alt="" coords="1495,59,1684,88"/>
+<area shape="rect" id="node17" href="$class_vertex.html#a4f6b93a708475d99009be70c89f038db" title="set the collapse vertex" alt="" coords="1488,112,1691,141"/>
+<area shape="rect" id="node26" href="$_model_l_o_d_tri_8cpp.html#a4749d4f5e7206d298f11825ee80419d3" title="compare two Vertex pointers collapse cost and return the higher one" alt="" coords="1203,323,1360,352"/>
+<area shape="rect" id="node28" href="$class_vertex.html#a16e4a320c6fbd9f46af710ba679a2400" title="get the collapse cost for the vertex" alt="" coords="1495,323,1684,352"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_main_window.html#a8c970ecc46f59fcd79f711f1e063e791" title="MainWindow::on_createLODB_clicked" alt="" coords="253,5,528,35"/>
+<area shape="rect" id="node5" href="$class_main_window.html#a252c6739d4e8c19e3c698ffdd9b4e43d" title="MainWindow::on_deleteLODB_clicked" alt="" coords="253,59,528,88"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ab9cf4e0c3e24284c1a5bd9a54eb5ce43" title="MainWindow::on_loadB_clicked" alt="" coords="277,112,504,141"/>
+</map>

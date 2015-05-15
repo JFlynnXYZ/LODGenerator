@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#a0aa90a1dd15c9f5cd454036632ef43c9" title="copy the Triangle information and return the lists" alt="" coords="651,5,869,35"/>
+<area shape="rect" id="node5" href="$class_model_l_o_d_tri.html#a27e9d6b07766251e516cf4033f9abd91" title="copy Vertex and Triangle information to Out variables" alt="" coords="255,59,572,88"/>
+<area shape="rect" id="node10" href="$class_model_l_o_d_tri.html#aca9440bc59f4382fb9e63e3b97fd666a" title="store Vertex pointers in descending collapse costs in an ordered list of" alt="" coords="281,112,545,141"/>
+<area shape="rect" id="node7" href="$class_model_l_o_d_tri.html#a9d91e28408e24b42ace3e51e47c1ae02" title="clear Vertex and Triangle information from Out variables" alt="" coords="637,59,883,88"/>
+<area shape="rect" id="node12" href="$class_model_l_o_d_tri.html#a96cdecb5789a2c0ac72b7fd433d1ae81" title="clear collapse cost ordered list" alt="" coords="629,112,891,141"/>
+<area shape="rect" id="node14" href="$class_model_l_o_d_tri.html#ac9c7e47403a5576b5b13c18cc2c4ab33" title="update collapse cost ordered list" alt="" coords="621,165,899,195"/>
+<area shape="rect" id="node16" href="$_model_l_o_d_tri_8cpp.html#a4749d4f5e7206d298f11825ee80419d3" title="compare two Vertex pointers collapse cost and return the higher one" alt="" coords="948,165,1105,195"/>
+<area shape="rect" id="node18" href="$class_vertex.html#a16e4a320c6fbd9f46af710ba679a2400" title="get the collapse cost for the vertex" alt="" coords="1156,165,1345,195"/>
+</map>

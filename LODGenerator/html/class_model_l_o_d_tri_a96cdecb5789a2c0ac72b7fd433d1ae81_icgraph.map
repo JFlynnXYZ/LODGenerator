@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#aca9440bc59f4382fb9e63e3b97fd666a" title="store Vertex pointers in descending collapse costs in an ordered list of" alt="" coords="319,32,583,61"/>
+<area shape="rect" id="node5" href="$class_model_l_o_d_tri.html#a5b76aed5627354298fcbc20c943909d3" title="calculate all edge collapse costs" alt="" coords="633,5,895,35"/>
+<area shape="rect" id="node11" href="$class_model_l_o_d_tri.html#ab54cd1091922e73b8f4028cb58d447dc" title="copy constructor for LOD creation" alt="" coords="664,59,864,88"/>
+<area shape="rect" id="node7" href="$class_model_l_o_d_tri.html#a96daa8f250962aca50e0ed9f83ee240c" title="Method to load the file in." alt="" coords="945,5,1087,35"/>
+<area shape="rect" id="node9" href="$class_model_l_o_d_tri.html#aad0724dc6465c5b15a77de3feb65eb5c" title="constructor to load an objfile as a parameter" alt="" coords="1136,5,1336,35"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#ac73a2ba7a8ca5ef5e8c9cd34c34063e1" title="calculate the cost of all adjacent vertex collapses from selected vertex" alt="" coords="243,32,523,61"/>
+<area shape="rect" id="node5" href="$class_model_l_o_d_tri.html#a5b76aed5627354298fcbc20c943909d3" title="calculate all edge collapse costs" alt="" coords="572,5,833,35"/>
+<area shape="rect" id="node11" href="$class_model_l_o_d_tri.html#a40dddc8c3dd293d8ba41eea8e91df321" title="collapse the edge between two vertices. Use vertices from m_lodVertexOut!" alt="" coords="601,59,804,88"/>
+<area shape="rect" id="node7" href="$class_model_l_o_d_tri.html#a96daa8f250962aca50e0ed9f83ee240c" title="Method to load the file in." alt="" coords="908,5,1049,35"/>
+<area shape="rect" id="node9" href="$class_model_l_o_d_tri.html#aad0724dc6465c5b15a77de3feb65eb5c" title="constructor to load an objfile as a parameter" alt="" coords="1123,5,1323,35"/>
+<area shape="rect" id="node13" href="$class_model_l_o_d_tri.html#a6de254a9e571eb6c89836f437bd96fe8" title="method to create a LOD for the current mesh" alt="" coords="883,59,1075,88"/>
+<area shape="rect" id="node15" href="$class_g_l_window.html#a1376e51f5b5141f37d599cdbe9c5014f" title="GLWindow::createLOD" alt="" coords="1136,59,1309,88"/>
+<area shape="rect" id="node17" href="$class_main_window.html#a8c970ecc46f59fcd79f711f1e063e791" title="MainWindow::on_createLODB_clicked" alt="" coords="1371,59,1645,88"/>
+</map>
