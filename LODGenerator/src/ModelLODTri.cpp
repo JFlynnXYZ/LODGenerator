@@ -4,11 +4,13 @@
 /// @todo re-write this at some stage to use boost::spirit::qi
 
 #include <boost/foreach.hpp>
-#include "ModelLODTri.h"
+
 #include <iostream>
 #include <cfloat>
-#include "TriangleV.h"
 #include <map>
+
+#include "ModelLODTri.h"
+#include "TriangleV.h"
 //----------------------------------------------------------------------------------------------------------------------
 /// @file ModelLODTri.cpp
 /// @brief implementation files for ModelLODTri class
@@ -19,6 +21,23 @@ namespace spt=boost::spirit;
 
 // syntactic sugar for specifying our grammar
 typedef spt::rule<spt::phrase_scanner_t> srule;
+
+//----------------------------------------------------------------------------------------------------------------------
+ModelLODTri::~ModelLODTri()
+{
+  for ( unsigned int i=0; i < m_lodVertex.size(); ++i)
+  {
+    delete(m_lodVertex[i]);
+  }
+
+  for ( unsigned int i=0; i < m_lodTriangle.size(); ++i)
+  {
+    delete(m_lodTriangle[i]);
+  }
+
+  clearVtxTriDataOut();
+
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 bool compareVertexCost(Vertex*& a, Vertex*& b)
@@ -41,7 +60,7 @@ void ModelLODTri::parseVertex( const char *_begin )
   NGL_UNUSED(result);
   // and add it to our vert list in abstact mesh parent
   m_verts.push_back(ngl::Vec3(values[0],values[1],values[2]));
-  // add the vertex id to my custom Vertex class
+  // add the vertex id and value to my custom Vertex class
   m_lodVertex.push_back(new Vertex(m_verts.size()-1, ngl::Vec3(values[0],values[1],values[2])));
 }
 
@@ -124,10 +143,12 @@ void ModelLODTri::parseFace(const char * _begin   )
   BOOST_FOREACH(int i, vec)
   {
     f.m_vert.push_back(i-1);
+    // store the Vertex class info in the triangle
     lodTri->m_vert.push_back(m_lodVertex[i-1]);
   }
-  // copy the Vertex Indicies into the adjacent vertex for each vertex class and
-  // add the adjacent triangles to each vertex.
+
+  // copy the Vertex class value into the adjacent vertex for each vertex class
+  // and add the adjacent triangles to each vertex.
   for (unsigned int i=0; i<vec.size(); i++)
   {
     for (unsigned int j=0; j<vec.size(); j++)
@@ -150,18 +171,20 @@ void ModelLODTri::parseFace(const char * _begin   )
     {
      std::cerr <<"Something wrong with the face data will continue but may not be correct\n";
     }
-    k =0;
+
     // copy in these references to normal vectors to the mesh's normal vector
+    // also, add the value to the triangle as well as the ID
+    k =0;
     BOOST_FOREACH(int i, nvec)
     {
       f.m_norm.push_back(i-1);
+      // add the value and ID to the Triangle class
       lodTri->m_norm.push_back(m_norm[i-1]);
       lodTri->setNormID(i-1,k);
       k++;
     }
     f.m_normals=true;
     lodTri->m_normals=true;
-
   }
 
   //
@@ -174,10 +197,12 @@ void ModelLODTri::parseFace(const char * _begin   )
      std::cerr <<"Something wrong with the face data will continue but may not be correct\n";
     }
     k = 0;
-    // copy in these references to normal vectors to the mesh's normal vector
+    // copy in these references to texture vectors to the mesh's texture vector
+    // also, add the value to the triangle as well as the ID
     BOOST_FOREACH(int i, tvec)
     {
       f.m_tex.push_back(i-1);
+      // add the value and ID to the Triangle class
       lodTri->m_tex.push_back(m_tex[i-1]);
       lodTri->setTexID(i-1, k);
     }
@@ -289,11 +314,16 @@ ModelLODTri::ModelLODTri( const std::string& _fname,const std::string& _texName 
     loadTexture(_texName);
     m_texture = true;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 ModelLODTri::ModelLODTri( ModelLODTri& _m )
 {
-
+  // clone data from lodVertexOut and lodTriangle out
   vtxTriData mVtxTriOut = _m.copyVtxTriData(_m.m_lodVertexOut, _m.m_lodTriangleOut);
+
+  // store the cloned data into the lodVertex and lodTriangle locations
+  m_lodVertex = mVtxTriOut.vtxData;
+  m_lodTriangle = mVtxTriOut.triData;
+
   m_vbo=false;
   m_vao=false;
   m_ext=0;
@@ -304,90 +334,116 @@ ModelLODTri::ModelLODTri( ModelLODTri& _m )
   m_maxX=0.0f; m_maxY=0.0f; m_maxZ=0.0f;
   m_minX=0.0f; m_minY=0.0f; m_minZ=0.0f;
 
-
-  m_lodVertex = mVtxTriOut.vtxData;
-  m_lodTriangle = mVtxTriOut.triData;
-
-
-
+  // resize to make data allocation quicker
   m_face.resize(m_lodTriangle.size());
 
+  // store maps for old and new ids so to renumber them correctly without adding
+  // two of the same values to the lists
   std::map <int, int> oldNewIDVtxMatch;
   std::map <int, int> oldNewIDNormMatch;
   std::map <int, int> oldNewIDTexMatch;
+
+  // stores the temp newID
   int newID;
+
+  // renumbers and organises all Verts, Normals and Texture coords
   for (unsigned int i=0; i<m_lodTriangle.size(); ++i)
   {
+
+    // stores all the new face data
     ngl::Face face;
 
-    // Norm Sort out
+    // Normal renumber: checks if the id has already been used, then adds the
+    // coordinate value to m_norm followed by adding the new position ID to the
+    // face
     for (unsigned int j=0; j<m_lodTriangle[i]->m_norm.size(); ++j)
     {
       if (oldNewIDNormMatch.find(m_lodTriangle[i]->getNormID(j)) == oldNewIDNormMatch.end())
       {
+        // stores the normal value
         m_norm.push_back(m_lodTriangle[i]->m_norm[j]);
         newID = m_norm.size()-1;
+        // stores the location of the normal value in m_norm
         face.m_norm.push_back(newID);
+        // adds to map to stop multiple ids for the same value
         oldNewIDNormMatch[m_lodTriangle[i]->getNormID(j)]=newID;
       }
       else
       {
+        // ID already used, so add to the face normal list the new ID
         face.m_norm.push_back(oldNewIDNormMatch[m_lodTriangle[i]->getNormID(j)]);
       }
     }
 
 
-    // Texture sort out
+    // Texture coord renumber: checks if the id has already been used, then adds the
+    // coordinate value to m_tex followed by adding the new position ID to the
+    // face
     for (unsigned int j=0; j<m_lodTriangle[i]->m_tex.size(); ++j)
     {
       if (oldNewIDTexMatch.find(m_lodTriangle[i]->getTexID(j)) == oldNewIDTexMatch.end())
       {
+        // stores the texture coord value
         m_tex.push_back(m_lodTriangle[i]->m_tex[j]);
         newID = m_tex.size()-1;
+        // stores the location of the texture coord value in m_tex
         face.m_tex.push_back(newID);
+        // adds to map to stop multiple ids for the same value
         oldNewIDTexMatch[m_lodTriangle[i]->getTexID(j)]=newID;
       }
       else
       {
+        // ID already used, so add to the face texture coord the new ID
         face.m_tex.push_back(oldNewIDTexMatch[m_lodTriangle[i]->getTexID(j)]);
       }
     }
 
-    // Verts sort out
-
+    // Verts renumber: checks if the id has already been used, then adds the
+    // coordinate value to m_vert followed by adding the new position ID to the
+    // face
     for (unsigned int j=0; j<m_lodTriangle[i]->m_vert.size(); ++j)
     {
       if (oldNewIDVtxMatch.find(m_lodTriangle[i]->m_vert[j]->getID()) == oldNewIDVtxMatch.end())
       {
+        // stores the vert value
         m_verts.push_back(m_lodTriangle[i]->m_vert[j]->m_vert);
         newID = m_verts.size()-1;
+        // stores the location of the texture coord value in m_vert
+        // takes the value from the Vertex class ID
         face.m_vert.push_back(newID);
+        // adds to map to stop multiple ids for the same value
         oldNewIDVtxMatch[m_lodTriangle[i]->m_vert[j]->getID()]=newID;
       }
       else
       {
+        // ID already used, so add to the face vert the new ID
         face.m_vert.push_back(oldNewIDVtxMatch[m_lodTriangle[i]->m_vert[j]->getID()]);
       }
     }
-
+    // stores the booleans and number of verts in face
     face.m_normals = m_lodTriangle[i]->m_normals;
     face.m_numVerts = face.m_vert.size()-1;
     face.m_textureCoord = m_lodTriangle[i]->m_textureCoord;
 
+    // store the face in m_face
     m_face[i] = face;
   }
 
-
+  // store the size of each list
   m_nVerts=m_verts.size();
   m_nNorm=m_norm.size();
   m_nTex=m_tex.size();
   m_nFaces=m_face.size();
 
+  // copy the vertex and triangle data to the out variable
   copyVtxTriNormTexDataToOut();
+
+  // store the collapse cost of the Vertices into an ordered list
   storeCollapseCostList();
 
+  // calculate bbox and centre
   this->calcDimensions();
-
+  this->createVAO();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -443,17 +499,6 @@ void ModelLODTri::save(const std::string& _fname)const
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-ngl::Vec3 ModelLODTri::getVertexAtVtx( Vertex& _v ) const
-{
-  return getVertexAtIndex(_v.getID());
-}
-//----------------------------------------------------------------------------------------------------------------------
-ngl::Face ModelLODTri::getFaceAtTri(Triangle &_t ) const
-{
- return m_face[_t.getID()];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 float ModelLODTri::calculateEColCost( Vertex* _u, Vertex* _v)
 {
   ngl::Real edgeLength = (m_verts[_v->getID()] - m_verts[_u->getID()]).length();
@@ -496,6 +541,7 @@ void ModelLODTri::calculateEColCostAtVtx( Vertex* _v)
     return;
   }
 
+  // set pointer to NULL and to the highest value
   _v->setCollapseVertex(NULL);
   _v->setCollapseCost(FLT_MAX);
 
@@ -505,6 +551,7 @@ void ModelLODTri::calculateEColCostAtVtx( Vertex* _v)
     float cost = calculateEColCost(_v, _v->m_vertAdj[i]);
     if (cost < _v->getCollapseCost())
     {
+      // set the collapse Vertex and the collapse cost
       _v->setCollapseVertex(_v->m_vertAdj[i]);
       _v->setCollapseCost(cost);
     }
@@ -532,6 +579,7 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     return;
   }
 
+  // temp store adjacent verts
   std::vector<Vertex *> vertTmp = _u->m_vertAdj;
 
   for ( int i =_u->m_faceAdj.size()-1; i >= 0; --i)
@@ -540,10 +588,9 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
     {
       // set NULL in triangle out
       m_lodTriangleOut[_u->m_faceAdj[i]->getID()] = NULL;
-      m_nDeletedFaces += 1;
       delete(_u->m_faceAdj[i]);
-
-
+      // add to number of deleted faces
+      m_nDeletedFaces += 1;
     }
   }
   for ( int i =_u->m_faceAdj.size()-1; i >= 0; --i)
@@ -553,6 +600,7 @@ void ModelLODTri::collapseEdge(Vertex *_u, Vertex *_v)
   }
   // delete the vertex _u
   delete _u;
+
   // recompute the edge collapse costs for adjacent verts for _v
   for ( unsigned int i=0; i < vertTmp.size(); ++i)
   {
@@ -615,6 +663,7 @@ vtxTriData ModelLODTri::copyVtxTriData(std::vector<Vertex *> _vtxData ,std::vect
     }
   }
 
+  // group the data to be returned as one value in a struct
   vtxTriData returnData;
 
   returnData.vtxData = newVtxData;
@@ -639,6 +688,8 @@ void ModelLODTri::copyVtxTriNormTexDataToOut()
 //----------------------------------------------------------------------------------------------------------------------
 void ModelLODTri::clearVtxTriDataOut()
 {
+  // iterate through both vertexOut and triangleOut, deleting the values
+
   for ( unsigned int i=0; i < m_lodVertexOut.size(); ++i)
   {
     delete(m_lodVertexOut[i]);
@@ -679,14 +730,20 @@ ModelLODTri *ModelLODTri::createLOD(const unsigned int _nFaces)
   m_nDeletedFaces = 0;
   while (m_nDeletedFaces < m_nFaces - _nFaces)
   {
+    // get the cheapest vertex from the front of the collapse cost list
     Vertex* cheapestVertex = m_lodVertexCollapseCost.front();
+    // store the vertexID to set the pointer in m_lodVertexOut to null after
     int vtxID = cheapestVertex->getID();
+    // erase the first value from the collapse cost list
     m_lodVertexCollapseCost.pop_front();
+    // collapse the edge from the cheapestVertex to its collapseVertex
     collapseEdge(cheapestVertex, cheapestVertex->getCollapseVertex());
+    // re-order the collapse cost list for the new collapse values
     updateCollapseCostList();
+    // set the lodVertexOut value to NULL to clear them from the list after
     m_lodVertexOut[vtxID] = NULL;
   }
-  // removing nulls
+  // removing nulls from m_lodVertexOut
   for (int i=m_lodVertexOut.size()-1; i>= 0; --i)
   {
     if (!m_lodVertexOut[i])
@@ -694,7 +751,7 @@ ModelLODTri *ModelLODTri::createLOD(const unsigned int _nFaces)
       m_lodVertexOut.erase(m_lodVertexOut.begin()+i);
     }
   }
-  // removing nulls
+  // removing nulls from m_lodTriangleOut
   for (int i=m_lodTriangleOut.size()-1; i>= 0; --i)
   {
     if (!m_lodTriangleOut[i])
@@ -703,17 +760,19 @@ ModelLODTri *ModelLODTri::createLOD(const unsigned int _nFaces)
     }
   }
 
+  // renumber all the triangles
   for (unsigned int i=0; i<m_lodTriangleOut.size(); ++i)
   {
     m_lodTriangleOut[i]->setID(i);
   }
 
+  // renumber all the vertices
   for (unsigned int i=0; i<m_lodVertexOut.size(); ++i)
   {
     m_lodVertexOut[i]->setID(i);
   }
 
-
+  // copy the data to a new modelLODTri
   ModelLODTri* newLOD = new ModelLODTri(*this);
 
 

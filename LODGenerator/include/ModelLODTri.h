@@ -2,12 +2,12 @@
 #define MODELLODTRI_H_
 //----------------------------------------------------------------------------------------------------------------------
 /// @file ModelLOD.h
-/// @brief basic obj loader inherits from AbstractMesh
+/// @brief obj loader and LOD creator. Inherits from AbstractMesh
 //----------------------------------------------------------------------------------------------------------------------
 // must include types.h first for Real and GLEW if required
 #include <ngl/Types.h>
+
 #include <vector>
-#include <ngl/Texture.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -17,26 +17,15 @@
 #include <stdlib.h>
 #include <list>
 #include <utility>
+
+#include <ngl/Texture.h>
 #include <ngl/Vec4.h>
-#include "AbstractMesh.h"
+#include <ngl/Obj.h>
 #include <ngl/BBox.h>
 #include <ngl/RibExport.h>
+
 #include "TriangleV.h"
 
-//----------------------------------------------------------------------------------------------------------------------
-/// @class ModelLODTri "include/ModelLODTri.h"
-/// @brief used to store vertex information from an imported model and used as 
-///		as a means of creating an LOD model.
-/// modified version of the Obj class from the NGL library
-/// @author Jonathan Flynn
-/// @version 0.1
-/// @date 02/03/15 imported code from Obj.h
-/// @todo add functionality to store adjacent triangles/vertices and use classes
-//----------------------------------------------------------------------------------------------------------------------
-struct vtxTriData {
-  std::vector<Vertex *> vtxData;
-  std::vector<Triangle *> triData;
-};
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief compare two Vertex pointers collapse cost and return the higher one
@@ -44,11 +33,25 @@ struct vtxTriData {
 //----------------------------------------------------------------------------------------------------------------------
 bool compareVertexCost(Vertex*& a, Vertex*& b);
 
+
+//----------------------------------------------------------------------------------------------------------------------
+/// @class ModelLODTri "include/ModelLODTri.h"
+/// @brief used to store vertex information from an imported model and used as
+///		as a means of creating an LOD model.
+/// modified version of the Obj class from the NGL library
+/// @author Jonathan Flynn
+/// @version 0.1
+/// @date 02/03/15 imported code from Obj.h
+/// @todo add functionality to store adjacent triangles/vertices and use classes
+//----------------------------------------------------------------------------------------------------------------------
 class ModelLODTri : public ngl::AbstractMesh
 {
 
 public :
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief deconstructor
+  //----------------------------------------------------------------------------------------------------------------------
+  virtual ~ModelLODTri();
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief default constructor
   //----------------------------------------------------------------------------------------------------------------------
@@ -79,18 +82,6 @@ public :
   /// @param[in] _fname the name of the file to save
   //----------------------------------------------------------------------------------------------------------------------
   void save( const std::string& _fname  ) const;
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  method to get a vertex coordinate using a vertex class pointer
-  /// @param[in] _v the vertex pointer for the point you want to get the coordinates for
-  /// @returns Vec3 of the x,y,z coordinates for the vertex
-  //----------------------------------------------------------------------------------------------------------------------
-  ngl::Vec3 getVertexAtVtx(Vertex &_v ) const;
-  //----------------------------------------------------------------------------------------------------------------------
-  /// @brief  method to get a face class using a triangle class pointer
-  /// @param[in] _t the triangle pointer for the face you want to get the class for
-  /// @returns Face value of triangle class it relates to
-  //----------------------------------------------------------------------------------------------------------------------
-  ngl::Face getFaceAtTri( Triangle& _t ) const;
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief  method to create a LOD for the current mesh
   /// @param[in] _nFaces the number of faces the LOD mesh will have
@@ -132,14 +123,14 @@ public :
   //----------------------------------------------------------------------------------------------------------------------
   void clearCollapseCostList();
   //----------------------------------------------------------------------------------------------------------------------
-  /// @update collapse cost ordered list
+  /// @brief update collapse cost ordered list
   //----------------------------------------------------------------------------------------------------------------------
   void updateCollapseCostList();
-
-
-
-
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief get if loaded or not
+  /// returns bool of m_loaded
+  //----------------------------------------------------------------------------------------------------------------------
+  bool getLoaded() {return m_loaded;}
 
 protected :
   //----------------------------------------------------------------------------------------------------------------------
@@ -193,7 +184,7 @@ protected :
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Triangle *> m_lodTriangle;
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief stores current number of deleted faces
+  /// @brief stores current number of deleted faces for current lod creation
   //----------------------------------------------------------------------------------------------------------------------
   unsigned int m_nDeletedFaces;
 };

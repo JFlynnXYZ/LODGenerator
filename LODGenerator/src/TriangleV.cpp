@@ -14,7 +14,6 @@
 
 Vertex::~Vertex()
 {
-  assert(m_faceAdj.size() == 0);
   for (unsigned int i=0; i<m_vertAdj.size(); ++i)
   {
     m_vertAdj[i]->m_vertAdj.erase(std::remove(m_vertAdj[i]->m_vertAdj.begin(), m_vertAdj[i]->m_vertAdj.end(), this),
@@ -152,6 +151,30 @@ Triangle& Triangle::operator=( Triangle &_t )
   m_vert = _t.m_vert;
   m_id = _t.m_id;
   return *this;
+}
+//----------------------------------------------------------------------------------------------------------------------
+void Triangle::setNormID(int _id, int _pos)
+{
+  if (m_normID.size()+1 > _pos)
+  {
+    m_normID.push_back(_id);
+  }
+  else
+  {
+    m_normID[_pos] = _id;
+  }
+}
+//----------------------------------------------------------------------------------------------------------------------
+void Triangle::setTexID(int _id, unsigned int _pos)
+{
+  if (m_texID.size()+1 > _pos)
+  {
+    m_texID.push_back(_id);
+  }
+  else
+  {
+    m_texID[_pos] = _id;
+  }
 }
 //----------------------------------------------------------------------------------------------------------------------
 void Triangle::calculateNormal()

@@ -13,12 +13,12 @@ isEqual(QT_MAJOR_VERSION, 5) {
 }
 # where to put moc auto generated files
 MOC_DIR=moc
-# on a mac we don't create a .app bundle file ( for ease of multiplatform use)
-CONFIG-=app_bundle
 # Auto include all .cpp files in the project src directory (can specifiy individually if required)
 SOURCES+=$$PWD/src/*.cpp
 # same for the .h files
 HEADERS+=$$PWD/include/*.h
+# include Form ui files
+FORMS += $$PWD/ui/*.ui
 # and add the include dir into the search path for Qt and make
 INCLUDEPATH+=./include
 # where our exe is going to live (root of project)
@@ -26,9 +26,16 @@ DESTDIR=./
 # add the other files
 OTHER_FILES+=   shaders/*.glsl \
                 models/*.obj \
-                textures/*.tga
-# were are going to default to a console app
+                textures/*.tga \
+                ui/* \
+                moc/*
+# were are going to default to a console
 CONFIG += console
+# on a mac we don't create a .app bundle file ( for ease of multiplatform use)
+CONFIG-=app_bundle
+
+#moves ui generated headers to correct folder
+UI_DIR=$$PWD/ui
 
 # note each command you add needs a ; as it will be run as a single line
 # first check if we are shadow building or not easiest way is to check out against current
@@ -104,4 +111,6 @@ win32: {
         LIBS+=-L$$(HOMEDRIVE)/NGL/lib -lNGL
         DEFINES+=NO_DLL
 }
+
+
 

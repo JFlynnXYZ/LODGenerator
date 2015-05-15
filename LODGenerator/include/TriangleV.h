@@ -6,26 +6,31 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 #include <ngl/Types.h>
-#include <ngl/Vec4.h>
+
 #include <vector>
 #include <iostream>
 
-//----------------------------------------------------------------------------------------------------------------------
-/// @class TriangleV "include/TriangleV.h"
-/// @brief used to store vertex and face/triangle information for the ModelLOD
-/// class and the imported model
-/// @author Jonathan Flynn
-/// @version 0.1
-/// @date 07/03/15 moved the Triangle.h and Vertex.h together
-/// @todo change the ctor for the triangle to calculate the face normal
-/// @todo change ctor of vertex to calculate adjacent vertices and faces
-/// @todo write function to calculate adjacent verticies and faces
-/// @todo this will need to be in the ModelLOD.h
-//----------------------------------------------------------------------------------------------------------------------
+#include <ngl/Vec4.h>
 
 class Triangle;
 class Vertex;
 
+//----------------------------------------------------------------------------------------------------------------------
+/// @brief a struct to hold a vector of Vertex * and Triangle * for passing these values of cloned
+///   lodVertex and triVertex to new LOD's
+//----------------------------------------------------------------------------------------------------------------------
+struct vtxTriData {
+  std::vector<Vertex *> vtxData; ///< stores Vertex class data for cloning
+  std::vector<Triangle *> triData; ///< stores Triangle class data for cloning
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+/// @class Vertex "include/TriangleV.h"
+/// @brief used to store vertex information for ModelLOD such as adjacent face and verts
+/// @author Jonathan Flynn
+/// @version 1.0
+/// @date 14/05/15 completed a working version of the class
+//----------------------------------------------------------------------------------------------------------------------
 class Vertex
 {
 
@@ -79,13 +84,13 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   Vertex& operator=( const Vertex& _v );
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief remove adjacent triangle
-  /// @param[in] pointer to triangle face
+  /// @brief remove adjacent Triangle to current Vertex
+  /// @param[in] pointer to Triangle face
   //----------------------------------------------------------------------------------------------------------------------
   void remAdjFace( Triangle *_t );
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief remove adjacent vertex
-  /// @param[in] pointer to vertex
+  /// @brief remove adjacent Vertex to current Vertex
+  /// @param[in] pointer to Vertex
   //----------------------------------------------------------------------------------------------------------------------
   void remAdjVert( Vertex* _v );
   //----------------------------------------------------------------------------------------------------------------------
@@ -94,12 +99,12 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   void remIfNonNeighbour( Vertex* _v );
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief add adjacent traingle
+  /// @brief add adjacent Traingle to current Vertex
   /// @param[in] pointer to triangle face
   //----------------------------------------------------------------------------------------------------------------------
   void addAdjFace( Triangle* _t);
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief add adjacent vertext
+  /// @brief add adjacent Vertex to current Vertex
   /// @param[in] pointer to vertex
   //----------------------------------------------------------------------------------------------------------------------
   void addAdjVert( Vertex* _v);
@@ -114,7 +119,7 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   void setID(int _id){ m_id = _id; }
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief get the collapse cost
+  /// @brief get the collapse cost for the vertex
   /// @returns a float being the collapse cost value
   //----------------------------------------------------------------------------------------------------------------------
   float getCollapseCost(){return m_cost;}
@@ -159,7 +164,9 @@ public:
   /// @brief stores the adjacent faces to the current vertex
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Triangle *> m_faceAdj;
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief stores the vertex's position
+  //----------------------------------------------------------------------------------------------------------------------
   ngl::Vec3 m_vert;
 
 
@@ -174,13 +181,21 @@ protected:
   //----------------------------------------------------------------------------------------------------------------------
   float m_cost;
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief the vertex to collapse onto to create the lowest cost "m_cost"
+  /// @brief the vertex to collapse onto to create the lowest cost, "m_cost"
   //----------------------------------------------------------------------------------------------------------------------
   Vertex* m_collapseVertex;
 
 };
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
+/// @class Triangle "include/TriangleV.h"
+/// @brief used to store face/triangle information for ModelLOD
+/// @author Jonathan Flynn
+/// @version 1.0
+/// @date 14/05/15 completed a working version of the class
+//----------------------------------------------------------------------------------------------------------------------
+
+
 class Triangle
 {
 
@@ -261,7 +276,7 @@ public:
   Triangle& operator =( Triangle &_t );
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief get Triangle id
-  /// @returns an int being the Traingle ID in the m_face list
+  /// @returns an int being the Triangle ID in the m_face list
   //----------------------------------------------------------------------------------------------------------------------
   int getID(){ return m_id; }
   //----------------------------------------------------------------------------------------------------------------------
@@ -270,7 +285,7 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   void setID(int _id){ m_id = _id; }
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief get norm id
+  /// @brief get normal id for the vert
   /// @returns an int being the Traingle ID in the m_face list
   //----------------------------------------------------------------------------------------------------------------------
   int getNormID(int _pos){ return m_normID[_pos]; }
@@ -278,17 +293,7 @@ public:
   /// @brief set norm id
   /// @param[in] _id int to set the id to
   //----------------------------------------------------------------------------------------------------------------------
-  void setNormID(int _id, int _pos)
-  {
-    if (m_normID.size()+1 > _pos)
-    {
-      m_normID.push_back(_id);
-    }
-    else
-    {
-      m_normID[_pos] = _id;
-    }
-  }
+  void setNormID(int _id, int _pos);
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief get tex id
   /// @returns an int being the Traingle ID in the m_face list
@@ -298,17 +303,7 @@ public:
   /// @brief set tex id
   /// @param[in] _id int to set the id to
   //----------------------------------------------------------------------------------------------------------------------
-  void setTexID(int _id, unsigned int _pos)
-  {
-    if (m_texID.size()+1 > _pos)
-    {
-      m_texID.push_back(_id);
-    }
-    else
-    {
-      m_texID[_pos] = _id;
-    }
-  }
+  void setTexID(int _id, unsigned int _pos);
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief get Triangle normal
   /// @returns a Vec4 containing the vector of the triangle normal
@@ -331,19 +326,28 @@ public:
   //----------------------------------------------------------------------------------------------------------------------
   void replaceVertex( Vertex *_u, Vertex *_v);
   //----------------------------------------------------------------------------------------------------------------------
-  /// @brief array of three Vertex vertices that make up the triangle
+  /// @brief vector of three Vertex vertices that make up the triangle
   //----------------------------------------------------------------------------------------------------------------------
   std::vector<Vertex *> m_vert;
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief vector of the three normal values for each vertex in the triangle
+  //----------------------------------------------------------------------------------------------------------------------
   std::vector<ngl::Vec3> m_norm;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief vector of the three texture co-ordinate values for each vertex in the triangle
+  //----------------------------------------------------------------------------------------------------------------------
   std::vector<ngl::Vec3> m_tex;
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief boolean that says if the vertex has texture co-ordinates or not
+  //----------------------------------------------------------------------------------------------------------------------
   bool m_textureCoord;
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief boolean that is true if the vertex has normals or not
+  //----------------------------------------------------------------------------------------------------------------------
   bool m_normals;
 
 
 protected:
-
 
   //----------------------------------------------------------------------------------------------------------------------
   /// @brief the face normal
@@ -353,9 +357,13 @@ protected:
   /// @brief the triangle id
   //----------------------------------------------------------------------------------------------------------------------
   int m_id;
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief vector of each normalID for each value in m_norm (respectively)
+  //----------------------------------------------------------------------------------------------------------------------
   std::vector<int> m_normID;
-
+  //----------------------------------------------------------------------------------------------------------------------
+  /// @brief vector of each textureID for each value in m_tex (respectively)
+  //----------------------------------------------------------------------------------------------------------------------
   std::vector<int>  m_texID;
 
 };

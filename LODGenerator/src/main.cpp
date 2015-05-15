@@ -1,16 +1,15 @@
 /****************************************************************************
 basic OpenGL demo modified from http://qt-project.org/doc/qt-5.0/qtgui/openglwindow.html
 ****************************************************************************/
-#include <QtGui/QGuiApplication>
+#include <QApplication>
 #include <iostream>
-#include "NGLScene.h"
-#include "ModelLODTri.h"
-#include "TriangleV.h"
+#include "MainWindow.h"
+
 
 
 int main(int argc, char **argv)
 {
-  QGuiApplication app(argc, argv);
+  QApplication app(argc, argv);
   // create an OpenGL format specifier
   QSurfaceFormat format;
   // set the number of samples for multisampling
@@ -31,10 +30,10 @@ int main(int argc, char **argv)
   // now set the depth buffer to 24 bits
   format.setDepthBufferSize(24);
   // now we are going to create our scene window
-  NGLScene window;
+  MainWindow window;
 
   // and set the OpenGL format
-  window.setFormat(format);
+  //window.setFormat(format);
   // we can now query the version to see if it worked
   std::cout<<"Profile is "<<format.majorVersion()<<" "<<format.minorVersion()<<"\n";
   // set the window size
