@@ -1,27 +1,57 @@
-#Computing For Animation 1 Assignment
+# LODGenerator
 
-this repo is for you to submit your computing for animation assignment. 
+![LODGenerator](http://jfdesigner.co.uk/wp-content/uploads/2015/10/LODGenerator-banner.png "LODGenerator")
+** WARNING: Currently unstable and buggy, use at your own risk! **
 
-Use this file for the project documentation and report. You can learn about markdown syntax [here]( https://help.github.com/articles/github-flavored-markdown/)
+LODGenerator is an application to load in an obj mesh and reduce the poly count by taking into acount the vertex positions of the model. It does this in the following steps:
 
-##Getting Started
+  - You supplying an wavefront obj model
+  - Set the number of faces you want the mesh to be reduced to
+  - A result is calculated and can be saved
 
-To start your project clone this repo into your home directory
+### Version
+0.0.1
 
-``` 
-git clone git@github.com:NCCA/[your username]-CA1.git
+### Tech
 
-cd [your usrname]-CA1
+Tested on in a Windows 7, 8.1 and 10 environment as well as Linux using Qt 5.4.
 
-```
+LODGenerator uses a few additional modules to work properly:
 
-You can then add your files and edit things. Once you are ready to upload (and do this often)
-
-```
-git add .
-git commit -am "added files"
-git push origin master
-```
-The commit message should make sence in the context of what you are doing such as modify certain files etc.
+* **[OpenGL]**         - Used to render the mesh in realtime
+* **[Qt 5.4]**         - Used to compile and create the makefile
+* **[NGL]**            - The NCCA's graphics library for teaching at Bournemouth University. https://github.com/NCCA/NGL
 
 
+### Installation
+
+*Installation steps for Windows*
+
+1. Install Qt 5.4 with MSVC2013 OpenGL 64bit compiler.
+2. Install NGL, guide can be found for windows at https://docs.google.com/document/d/1QmMWPxFW7qy-eSDxDW5SSgPgB46Oj9wXuWVZhu8iNuI/edit
+3. Build and run
+
+After that, you should be good to go!
+
+### How to Use
+
+To use the program, simply run the executable, load in a mesh and set the specific number of faces wanted. Then export the file out.
+
+For more detailed instructions, see LODGenerator/FinalSubmission/UserGuide.pdf
+
+### To-Do
+
+ - [BUG] Fix segmentation fault when trying to create a second LOD
+
+## Contact
+
+If you have problems or questions then please contact me by emailing me at jonflynn@jfdesigner.co.uk.
+
+## Website
+
+Visit my portfolio to see more of my work and interesting programs at http://jfdesigner.co.uk/
+
+License
+----
+
+GPL V2
