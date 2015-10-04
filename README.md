@@ -1,6 +1,7 @@
 # LODGenerator
 
 ![LODGenerator](http://jfdesigner.co.uk/wp-content/uploads/2015/10/LODGenerator-banner.png "LODGenerator")
+
 ** WARNING: Currently unstable and buggy, use at your own risk! **
 
 LODGenerator is an application to load in an obj mesh and reduce the poly count by taking into acount the vertex positions of the model. It does this in the following steps:
