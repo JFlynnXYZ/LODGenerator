@@ -38,7 +38,7 @@ After that, you should be good to go!
 
 To use the program, simply run the executable, load in a mesh and set the specific number of faces wanted. Then export the file out.
 
-For more detailed instructions, see LODGenerator/FinalSubmission/UserGuide.pdf
+For more detailed instructions, see https://github.com/JFDesigner/LODGenerator/blob/master/FinalSubmission/UserGuide.pdf
 
 ### To-Do
 
