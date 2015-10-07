@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#a96cdecb5789a2c0ac72b7fd433d1ae81" title="clear collapse cost ordered list" alt="" coords="328,5,589,35"/>
-<area shape="rect" id="node5" href="$class_model_l_o_d_tri.html#ac9c7e47403a5576b5b13c18cc2c4ab33" title="update collapse cost ordered list" alt="" coords="320,59,597,88"/>
-<area shape="rect" id="node7" href="$_model_l_o_d_tri_8cpp.html#a4749d4f5e7206d298f11825ee80419d3" title="compare two Vertex pointers collapse cost and return the higher one" alt="" coords="647,59,804,88"/>
-<area shape="rect" id="node9" href="$class_vertex.html#a16e4a320c6fbd9f46af710ba679a2400" title="get the collapse cost for the vertex" alt="" coords="855,59,1044,88"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_g_l_window.html#a28d40814b1a1cafc232e04f2747260a7" title="GLWindow::getModelLODTri" alt="" coords="281,5,487,35"/>
-<area shape="rect" id="node5" href="$class_g_l_window.html#a2fd069b61ad0c4791699d05a3f9bcd40" title="GLWindow::setModelLOD" alt="" coords="288,59,480,88"/>
-<area shape="rect" id="node7" href="$class_g_l_window.html#a20b0ecd27e8d1c4b301d36285a2b6fba" title="GLWindow::updateAllLODs" alt="" coords="285,112,483,141"/>
-</map>

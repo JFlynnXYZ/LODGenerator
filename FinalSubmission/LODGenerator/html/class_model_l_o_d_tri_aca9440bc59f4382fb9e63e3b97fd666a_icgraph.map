@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#a5b76aed5627354298fcbc20c943909d3" title="calculate all edge collapse costs" alt="" coords="321,5,583,35"/>
-<area shape="rect" id="node9" href="$class_model_l_o_d_tri.html#ab54cd1091922e73b8f4028cb58d447dc" title="copy constructor for LOD creation" alt="" coords="352,59,552,88"/>
-<area shape="rect" id="node5" href="$class_model_l_o_d_tri.html#a96daa8f250962aca50e0ed9f83ee240c" title="Method to load the file in." alt="" coords="633,5,775,35"/>
-<area shape="rect" id="node7" href="$class_model_l_o_d_tri.html#aad0724dc6465c5b15a77de3feb65eb5c" title="constructor to load an objfile as a parameter" alt="" coords="824,5,1024,35"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#a6de254a9e571eb6c89836f437bd96fe8" title="method to create a LOD for the current mesh" alt="" coords="253,5,445,35"/>
-<area shape="rect" id="node5" href="$class_g_l_window.html#a1376e51f5b5141f37d599cdbe9c5014f" title="GLWindow::createLOD" alt="" coords="495,5,668,35"/>
-<area shape="rect" id="node7" href="$class_main_window.html#a8c970ecc46f59fcd79f711f1e063e791" title="MainWindow::on_createLODB_clicked" alt="" coords="717,5,992,35"/>
-</map>

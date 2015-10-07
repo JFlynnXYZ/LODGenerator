@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_model_l_o_d_tri.html#ac8547e039d8991ae67c9bdbef4e7db85" title="calculate the cost of an edge collapse from two vertices" alt="" coords="333,5,573,35"/>
-<area shape="rect" id="node7" href="$class_vertex.html#a0a096ee053dca43961ed9003a90a5ee6" title="set the collapse cost" alt="" coords="359,59,548,88"/>
-<area shape="rect" id="node9" href="$class_vertex.html#a4f6b93a708475d99009be70c89f038db" title="set the collapse vertex" alt="" coords="352,112,555,141"/>
-<area shape="rect" id="node5" href="$class_vertex.html#a03fab663348d118917946606fdd270fa" title="get vertex id" alt="" coords="621,5,739,35"/>
-</map>

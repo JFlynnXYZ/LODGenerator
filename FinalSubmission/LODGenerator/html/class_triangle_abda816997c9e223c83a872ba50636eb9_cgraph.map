@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_vertex.html#a0aeb6e8f292abd6a6e3cd4ba9dec55aa" title="add adjacent Traingle to current Vertex" alt="" coords="259,5,413,35"/>
-<area shape="rect" id="node5" href="$class_triangle.html#a96e9f8ea061a52c701f67b4937b3e54d" title="calculates normal and stores in m_fNormal" alt="" coords="241,59,431,88"/>
-<area shape="rect" id="node7" href="$class_vertex.html#a88d1cfc3bbdd116a6038cf6fd5b4e272" title="finds out if the vertex has a particular adjacent triangle or not" alt="" coords="259,112,413,141"/>
-<area shape="rect" id="node9" href="$class_vertex.html#a580f719aca51c76279c3de1e382cd57c" title="remove adjacent Triangle to current Vertex" alt="" coords="257,165,415,195"/>
-<area shape="rect" id="node11" href="$class_vertex.html#a11b6fde37deb527a01c1552f51e30d1e" title="removes _v from neighbour list if _v isn&#39;t a neighbour" alt="" coords="233,219,439,248"/>
-</map>
