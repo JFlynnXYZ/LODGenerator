@@ -55,4 +55,4 @@ Visit my portfolio to see more of my work and interesting programs at http://jfd
 License
 ----
 
-GPL V2
+GPL V3
