@@ -1,6 +1,6 @@
 # LODGenerator
 
-![LODGenerator](http://jfdesigner.co.uk/wp-content/uploads/2015/10/LODGenerator-banner.png "LODGenerator")
+![LODGenerator](Docs/LODGenerator-banner.png "LODGenerator")
 
 **WARNING: Currently unstable and buggy, use at your own risk!**
 
