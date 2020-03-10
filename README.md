@@ -50,7 +50,7 @@ If you have problems or questions then please contact me by emailing me at jonfl
 
 ## Website
 
-Visit my portfolio to see more of my work and interesting programs at http://jfdesigner.co.uk/
+Visit my portfolio to see more of my work and interesting programs at https://jflynn.xyz. Read more at https://jflynn.xyz/portfolio/lod-generator/
 
 License
 ----
