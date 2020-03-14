@@ -13,6 +13,9 @@ LODGenerator is an application to load in an obj mesh and reduce the poly count 
 ### Version
 0.0.1
 
+### Video
+[![Video](http://i.vimeocdn.com/video/863511804_500.jpg)](https://vimeo.com/396653889)
+
 ### Tech
 
 Tested on in a Windows 7, 8.1 and 10 environment as well as Linux using Qt 5.4.
