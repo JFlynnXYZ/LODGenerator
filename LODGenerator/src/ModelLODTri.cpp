@@ -221,7 +221,7 @@ void ModelLODTri::parseFace(const char * _begin   )
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool ModelLODTri::load(const std::string &_fname,bool _calcBB )
+bool ModelLODTri::load(const std::string &_fname,bool _calcBB ) noexcept
 {
  // here we build up our ebnf rules for parsing
   // so first we have a comment

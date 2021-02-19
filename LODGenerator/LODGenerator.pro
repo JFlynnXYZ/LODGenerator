@@ -100,15 +100,16 @@ macx:DEFINES += DARWIN
 !win32:INCLUDEPATH += $$(HOME)/NGL/include/
 
 win32: {
-        PRE_TARGETDEPS+=$$(HOMEDRIVE)/NGL/lib/NGL.lib
-        INCLUDEPATH+=-I $$(HOMEDRIVE)/boost
-        INCLUDEPATH+=$$(HOMEDRIVE)/NGL/include/
+        PRE_TARGETDEPS+=$$(NGLDIR)/lib/NGL.lib
+        INCLUDEPATH+=-I $$(BOOST)/include/boost-1_61
+        INCLUDEPATH+=$$(NGLDIR)/include/
         DEFINES+=GL42
         DEFINES+=WIN32
         DEFINES+=_WIN32
         DEFINES+=_USE_MATH_DEFINES
         LIBS+=-lopengl32
-        LIBS+=-L$$(HOMEDRIVE)/NGL/lib -lNGL
+        LIBS+=-L$$(NGLDIR)/lib -lNGL
+        LIBS+=-L$$(BOOST)/lib/x64 -llibboost_thread-vc140-mt-1_61
         DEFINES+=NO_DLL
 }
 

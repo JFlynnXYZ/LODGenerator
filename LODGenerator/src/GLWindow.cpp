@@ -73,8 +73,8 @@ void GLWindow::initializeGL()
   // we are creating a shader called Phong
   shader->createShaderProgram("Phong");
   // now we are going to create empty shaders for Frag and Vert
-  shader->attachShader("PhongVertex",ngl::VERTEX);
-  shader->attachShader("PhongFragment",ngl::FRAGMENT);
+  shader->attachShader("PhongVertex",ngl::ShaderType::VERTEX);
+  shader->attachShader("PhongFragment",ngl::ShaderType::FRAGMENT);
   // attach the source
   shader->loadShaderSource("PhongVertex","shaders/PhongVertex.glsl");
   shader->loadShaderSource("PhongFragment","shaders/PhongFragment.glsl");
@@ -100,12 +100,12 @@ void GLWindow::initializeGL()
   shader->setShaderParam3f("viewerPos",m_camera->getEye().m_x,m_camera->getEye().m_y,m_camera->getEye().m_z);
   // now pass the modelView and projection values to the shader
   // the shader will use the currently active material and light0 so set them
-  ngl::Material m(ngl::POLISHEDSILVER);
+  ngl::Material m(ngl::STDMAT::POLISHEDSILVER);
   m.loadToShader("material");
   // we need to set a base colour as the material isn't being used for all the params
   shader->setShaderParam4f("Colour",0.23125f,0.23125f,0.23125f,1);
 
-  ngl::Light light(ngl::Vec3(2,2,2),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::POINTLIGHT);
+  ngl::Light light(ngl::Vec3(2,2,2),ngl::Colour(1,1,1,1),ngl::Colour(1,1,1,1),ngl::LightModes::POINTLIGHT);
   // now create our light this is done after the camera so we can pass the
   // transpose of the projection matrix to the light to do correct eye space
   // transformations
