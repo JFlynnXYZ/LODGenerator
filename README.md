@@ -1,6 +1,6 @@
 # LODGenerator
 
-![LODGenerator](http://jfdesigner.co.uk/wp-content/uploads/2015/10/LODGenerator-banner.png "LODGenerator")
+![LODGenerator](Docs/LODGenerator-banner.png "LODGenerator")
 
 **WARNING: Currently unstable and buggy, use at your own risk!**
 
@@ -12,6 +12,9 @@ LODGenerator is an application to load in an obj mesh and reduce the poly count 
 
 ### Version
 0.0.1
+
+### Video
+[![Video](http://i.vimeocdn.com/video/863511804_500.jpg)](https://vimeo.com/396653889)
 
 ### Tech
 
@@ -50,7 +53,7 @@ If you have problems or questions then please contact me by emailing me at jonfl
 
 ## Website
 
-Visit my portfolio to see more of my work and interesting programs at http://jfdesigner.co.uk/
+Visit my portfolio to see more of my work and interesting programs at https://jflynn.xyz. Read more at https://jflynn.xyz/portfolio/lod-generator/
 
 License
 ----
